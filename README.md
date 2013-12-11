@@ -1,7 +1,7 @@
 MyBBIntegrator
 ==============
 
-Repository for the MyBB Integrator
+PHP Class which offers MyBB functionality for own use (integration into website).
 
 
 In order to build up a community, a forum is an essential step towards connecting the users and towards creating a stable 
