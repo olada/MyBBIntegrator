@@ -11,3 +11,5 @@ installed forum.
 MyBB has proven to be a nice free bulletin board, definitely competiting with free board giants like phpBB or SMF.
 The class provided shall help you link your site to your MyBB forum. 
 No more exploring of complicated code, no more trial and error - a set of helpful functions is ready for use!
+
+This branch deals with MyBB version 1.8.5 and incorporates test cases to cover functionality provided by MyBBIntegrator.
