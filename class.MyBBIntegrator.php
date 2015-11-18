@@ -1592,7 +1592,7 @@ class MyBBIntegrator
 	 *
 	 * @param integer $user_id ID of user
 	 * @param array $params Array with options for SQL Query (orderby, sort)
-	 * @param boolean $translate_folders If the folders should be turned into readable format à la "inbox"
+	 * @param boolean $translate_folders If the folders should be turned into readable format Ã  la "inbox"
 	 * @return array
 	*/
 	function getPrivateMessagesOfUser($user_id, $params = array('orderby' => 'pm.dateline', 'sort' => 'DESC'), $translate_folders = true)
@@ -3001,7 +3001,7 @@ class MyBBIntegrator
 		$this->db->delete_query("userfields", "ufid='{$user_id}'");
 		$this->db->delete_query("privatemessages", "uid='{$user_id}'");
 		$this->db->delete_query("events", "uid='{$user_id}'");
-		$this->db->delete_query("moderators", "uid='{$user_id}'");
+		$this->db->delete_query("moderators", "id='{$user_id}'");
 		$this->db->delete_query("forumsubscriptions", "uid='{$user_id}'");
 		$this->db->delete_query("threadsubscriptions", "uid='{$user_id}'");
 		$this->db->delete_query("sessions", "uid='{$user_id}'");
