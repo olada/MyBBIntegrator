@@ -1,7 +1,7 @@
 {
     "event": "suiteStart",
-    "suite": ".",
-    "tests": 1
+    "suite": "All MyBBIntegrator Tests With MyBB-Integration",
+    "tests": 3
 }{
     "event": "suiteStart",
     "suite": "ForumTest",
@@ -15,8 +15,50 @@
     "suite": "ForumTest",
     "test": "ForumTest::testCheckForumPassword",
     "status": "pass",
+    "time": 0.015600204467773,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "suiteStart",
+    "suite": "InitTest",
+    "tests": 1
+}{
+    "event": "testStart",
+    "suite": "InitTest",
+    "test": "InitTest::testMyBBIntegratorObjectIsInitialized"
+}{
+    "event": "test",
+    "suite": "InitTest",
+    "test": "InitTest::testMyBBIntegratorObjectIsInitialized",
+    "status": "pass",
     "time": 0,
     "trace": [],
     "message": "",
+    "output": ""
+}{
+    "event": "suiteStart",
+    "suite": "UserTest",
+    "tests": 1
+}{
+    "event": "testStart",
+    "suite": "UserTest",
+    "test": "UserTest::testGetAllMembers"
+}{
+    "event": "test",
+    "suite": "UserTest",
+    "test": "UserTest::testGetAllMembers",
+    "status": "fail",
+    "time": 0.015600919723511,
+    "trace": [
+        {
+            "file": "C:\\wamp64\\www\\mybb-integrator\\test\\tests\\UserTest.php",
+            "line": 12,
+            "function": "assertEquals",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Failed asserting that 0 matches expected 1.",
     "output": ""
 }

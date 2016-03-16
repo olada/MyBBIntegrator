@@ -1,0 +1,2020 @@
+
+ 4000  
+ 4001  	if(!$attachtypes)
+ ....
+ 4026  			elseif(defined("IN_PORTAL"))
+ 4027  			{
+ 4028: 				global $change_dir;
+ 4029  				$attach_icons_schemes[$ext] = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+ 4030  				$attach_icons_schemes[$ext] = $mybb->get_asset_url($attach_icons_schemes[$ext]);
+ ....
+ 4049  		else if(defined("IN_PORTAL"))
+ 4050  		{
+ 4051: 			global $change_dir;
+ 4052  			$theme['imgdir'] = "{$change_dir}/images";
+ 4053  		}
+ ....
+ 4071  function get_unviewable_forums($only_readable_threads=false)
+ 4072  {
+ 4073: 	global $forum_cache, $permissioncache, $mybb;
+ 4074  
+ 4075  	if(!is_array($forum_cache))
+ ....
+ 4154  function build_breadcrumb()
+ 4155  {
+ 4156: 	global $nav, $navbits, $templates, $theme, $lang, $mybb;
+ 4157  
+ 4158  	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
+ ....
+ 4227  function add_breadcrumb($name, $url="")
+ 4228  {
+ 4229: 	global $navbits;
+ 4230  
+ 4231  	$navsize = count($navbits);
+ ....
+ 4242  function build_forum_breadcrumb($fid, $multipage=array())
+ 4243  {
+ 4244: 	global $pforumcache, $currentitem, $forum_cache, $navbits, $lang, $base_url, $archiveurl;
+ 4245  
+ 4246  	if(!$pforumcache)
+ ....
+ 4307  function reset_breadcrumb()
+ 4308  {
+ 4309: 	global $navbits;
+ 4310  
+ 4311  	$newnav[0]['name'] = $navbits[0]['name'];
+ ....
+ 4329  function build_archive_link($type="", $id="")
+ 4330  {
+ 4331: 	global $mybb;
+ 4332  
+ 4333  	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
+ ....
+ 4365  function debug_page()
+ 4366  {
+ 4367: 	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang, $cache;
+ 4368  
+ 4369  	$totaltime = format_time_duration($maintimer->totaltime);
+ ....
+ 4511  function send_page_headers()
+ 4512  {
+ 4513: 	global $mybb;
+ 4514  
+ 4515  	if($mybb->settings['nocacheheaders'] == 1)
+ ....
+ 4530  function mark_reports($id, $type="post")
+ 4531  {
+ 4532: 	global $db, $cache, $plugins;
+ 4533  
+ 4534  	switch($type)
+ ....
+ 4578  function nice_time($stamp, $options=array())
+ 4579  {
+ 4580: 	global $lang;
+ 4581  
+ 4582  	$ysecs = 365*24*60*60;
+ ....
+ 4722  function alt_trow($reset=0)
+ 4723  {
+ 4724: 	global $alttrow;
+ 4725  
+ 4726  	if($alttrow == "trow1" && !$reset)
+ ....
+ 4746  function join_usergroup($uid, $joingroup)
+ 4747  {
+ 4748: 	global $db, $mybb;
+ 4749  
+ 4750  	if($uid == $mybb->user['uid'])
+ ....
+ 4798  function leave_usergroup($uid, $leavegroup)
+ 4799  {
+ 4800: 	global $db, $mybb, $cache;
+ 4801  
+ 4802  	if($uid == $mybb->user['uid'])
+ ....
+ 4886  	if($fields == true)
+ 4887  	{
+ 4888: 		global $mybb;
+ 4889  
+ 4890  		if(!is_array($ignore))
+ ....
+ 4964  function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false, $count_override=false)
+ 4965  {
+ 4966: 	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
+ 4967  
+ 4968  	if($tid == 0)
+ ....
+ 5082  function my_number_format($number)
+ 5083  {
+ 5084: 	global $mybb;
+ 5085  
+ 5086  	if($number == "-")
+ ....
+ 5119  function convert_through_utf8($str, $to=true)
+ 5120  {
+ 5121: 	global $lang;
+ 5122  	static $charset;
+ 5123  	static $use_mb;
+ ....
+ 5264  function format_bdays($display, $bm, $bd, $by, $wd)
+ 5265  {
+ 5266: 	global $lang;
+ 5267  
+ 5268  	$bdays = array(
+ ....
+ 5378  function update_first_post($tid)
+ 5379  {
+ 5380: 	global $db;
+ 5381  
+ 5382  	$query = $db->query("
+ ....
+ 5412  function update_last_post($tid)
+ 5413  {
+ 5414: 	global $db;
+ 5415  
+ 5416  	$query = $db->query("
+ ....
+ 5464  function my_strlen($string)
+ 5465  {
+ 5466: 	global $lang;
+ 5467  
+ 5468  	$string = preg_replace("#&\#([0-9]+);#", "-", $string);
+ ....
+ 5676  function get_event_date($event)
+ 5677  {
+ 5678: 	global $mybb;
+ 5679  
+ 5680  	$event_date = explode("-", $event['date']);
+ ....
+ 5720  function build_profile_link($username="", $uid=0, $target="", $onclick="")
+ 5721  {
+ 5722: 	global $mybb, $lang;
+ 5723  
+ 5724  	if(!$username && $uid == 0)
+ ....
+ 5910  function get_user($uid)
+ 5911  {
+ 5912: 	global $mybb, $db;
+ 5913  	static $user_cache;
+ 5914  
+ ....
+ 5941  function get_user_by_username($username, $options=array())
+ 5942  {
+ 5943: 	global $mybb, $db;
+ 5944  
+ 5945  	$username = $db->escape_string(my_strtolower($username));
+ ....
+ 6001  function get_forum($fid, $active_override=0)
+ 6002  {
+ 6003: 	global $cache;
+ 6004  	static $forum_cache;
+ 6005  
+ ....
+ 6041  function get_thread($tid, $recache = false)
+ 6042  {
+ 6043: 	global $db;
+ 6044  	static $thread_cache;
+ 6045  
+ ....
+ 6078  function get_post($pid)
+ 6079  {
+ 6080: 	global $db;
+ 6081  	static $post_cache;
+ 6082  
+ ....
+ 6112  function get_inactive_forums()
+ 6113  {
+ 6114: 	global $forum_cache, $cache;
+ 6115  
+ 6116  	if(!$forum_cache)
+ ....
+ 6149  function login_attempt_check($fatal = true)
+ 6150  {
+ 6151: 	global $mybb, $lang, $session, $db;
+ 6152  
+ 6153  	if($mybb->settings['failedlogincount'] == 0)
+ ....
+ 6260  function email_already_in_use($email, $uid="")
+ 6261  {
+ 6262: 	global $db;
+ 6263  
+ 6264  	$uid_string = "";
+ ....
+ 6283  function rebuild_settings()
+ 6284  {
+ 6285: 	global $db, $mybb;
+ 6286  
+ 6287  	if(!file_exists(MYBB_ROOT."inc/settings.php"))
+ ....
+ 6324  function build_highlight_array($terms)
+ 6325  {
+ 6326: 	global $mybb;
+ 6327  
+ 6328  	if($mybb->settings['minsearchword'] < 1)
+ ....
+ 6484  function is_banned_username($username, $update_lastuse=false)
+ 6485  {
+ 6486: 	global $db;
+ 6487  	$query = $db->simple_select('banfilters', 'filter, fid', "type='2'");
+ 6488  	while($banned_username = $db->fetch_array($query))
+ ....
+ 6513  function is_banned_email($email, $update_lastuse=false)
+ 6514  {
+ 6515: 	global $cache, $db;
+ 6516  
+ 6517  	$banned_cache = $cache->read("bannedemails");
+ ....
+ 6556  function is_banned_ip($ip_address, $update_lastuse=false)
+ 6557  {
+ 6558: 	global $db, $cache;
+ 6559  
+ 6560  	$banned_ips = $cache->read("bannedips");
+ ....
+ 6610  function build_timezone_select($name, $selected=0, $short=false)
+ 6611  {
+ 6612: 	global $mybb, $lang, $templates;
+ 6613  
+ 6614  	$timezones = array(
+ ....
+ 6828  	if(!isset($super_admins))
+ 6829  	{
+ 6830: 		global $mybb;
+ 6831  		$super_admins = str_replace(" ", "", $mybb->config['super_admins']);
+ 6832  	}
+ ....
+ 6853  function is_member($groups, $user = false)
+ 6854  {
+ 6855: 	global $mybb;
+ 6856  	
+ 6857  	if(empty($groups))
+ ....
+ 7016  function fetch_ban_times()
+ 7017  {
+ 7018: 	global $plugins, $lang;
+ 7019  
+ 7020  	// Days-Months-Years
+ ....
+ 7073  function expire_warnings()
+ 7074  {
+ 7075: 	global $warningshandler;
+ 7076  
+ 7077  	if(!is_object($warningshandler))
+ ....
+ 7114  function my_rmdir_recursive($path, $ignore=array())
+ 7115  {
+ 7116: 	global $orig_dir;
+ 7117  
+ 7118  	if(!isset($orig_dir))
+ ....
+ 7459  function verify_files($path=MYBB_ROOT, $count=0)
+ 7460  {
+ 7461: 	global $mybb, $checksums, $bad_verify_files;
+ 7462  
+ 7463  	// We don't need to check these types of files
+ ....
+ 8001  function send_pm($pm, $fromid = 0, $admin_override=false)
+ 8002  {
+ 8003: 	global $lang, $mybb, $db, $session;
+ 8004  
+ 8005  	if($mybb->settings['enablepms'] == 0)
+ ....
+ 8138  function log_spam_block($username = '', $email = '', $ip_address = '', $data = array())
+ 8139  {
+ 8140: 	global $db, $session;
+ 8141  
+ 8142  	if(!is_array($data))
+ ....
+ 8174  function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
+ 8175  {
+ 8176: 	global $mybb, $plugins;
+ 8177  
+ 8178  	$success = false;
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_archive.php:
+   18  function archive_header($title="", $fulltitle="", $fullurl="")
+   19  {
+   20: 	global $mybb, $lang, $db, $nav, $archiveurl, $sent_header;
+   21  
+   22  	// Build the archive navigation.
+   ..
+   85  function archive_navigation()
+   86  {
+   87: 	global $navbits, $mybb, $lang;
+   88  
+   89  	$navsep = " &gt; ";
+   ..
+  129  function archive_multipage($count, $perpage, $page, $url)
+  130  {
+  131: 	global $lang;
+  132  	if($count > $perpage)
+  133  	{
+  ...
+  158  function archive_footer()
+  159  {
+  160: 	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $sent_header;
+  161  	$totaltime = $maintimer->stop();
+  162  	if($mybb->settings['showvernum'] == 1)
+  ...
+  187  function archive_error($error)
+  188  {
+  189: 	global $lang, $mybb, $sent_header;
+  190  	if(!$sent_header)
+  191  	{
+  ...
+  207  function archive_error_no_permission()
+  208  {
+  209: 	global $lang, $db, $session;
+  210  
+  211  	$noperm_array = array (
+  ...
+  228  function check_forum_password_archive($fid, $pid=0)
+  229  {
+  230: 	global $forum_cache, $mybb;
+  231  
+  232  	if(!is_array($forum_cache))
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_calendar.php:
+   20  function build_mini_calendar($calendar, $month, $year, &$events_cache)
+   21  {
+   22: 	global $events_cache, $mybb, $templates, $theme, $monthnames;
+   23  
+   24  	// Incoming month/year?
+   ..
+  180  function cache_calendars()
+  181  {
+  182: 	global $db;
+  183  	static $calendar_cache;
+  184  
+  ...
+  204  function get_calendar_permissions($cid=0)
+  205  {
+  206: 	global $db, $mybb;
+  207  	static $calendar_permissions;
+  208  
+  ...
+  334  function build_calendar_jump($selected=0)
+  335  {
+  336: 	global $db, $mybb, $templates, $lang, $gobutton;
+  337  
+  338  	$calendar_permissions = get_calendar_permissions();
+  ...
+  376  function get_next_month($month, $year)
+  377  {
+  378: 	global $monthnames;
+  379  
+  380  	if($month == 12)
+  ...
+  401  function get_prev_month($month, $year)
+  402  {
+  403: 	global $monthnames;
+  404  
+  405  	if($month == 1)
+  ...
+  429  function get_events($calendar, $start, $end, $unapproved=0, $private=1)
+  430  {
+  431: 	global $db, $mybb;
+  432  
+  433  	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
+  ...
+  547  function get_birthdays($months, $day="")
+  548  {
+  549: 	global $db;
+  550  
+  551  	$year = my_date("Y");
+  ...
+  650  function fetch_weekday_name($weekday, $short=false)
+  651  {
+  652: 	global $lang;
+  653  	switch($weekday)
+  654  	{
+  ...
+  927  function fetch_friendly_repetition($event)
+  928  {
+  929: 	global $lang;
+  930  
+  931  	$monthnames = array(
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_forumlist.php:
+   18  function build_forumbits($pid=0, $depth=1)
+   19  {
+   20: 	global $db, $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers;
+   21  	static $private_forums;
+   22  
+   ..
+  466  function get_forum_lightbulb($forum, $lastpost, $locked=0)
+  467  {
+  468: 	global $mybb, $lang, $db, $unread_forums;
+  469  
+  470  	// This forum is a redirect, so override the folder icon with the "offlink" icon.
+  ...
+  544  function get_forum_unapproved($forum)
+  545  {
+  546: 	global $lang, $templates;
+  547  
+  548  	$unapproved_threads = $unapproved_posts = '';
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_indicators.php:
+   17  function mark_thread_read($tid, $fid)
+   18  {
+   19: 	global $mybb, $db;
+   20  
+   21  	// Can only do "true" tracking for registered users
+   ..
+   57  function fetch_unread_count($fid)
+   58  {
+   59: 	global $cache, $db, $mybb;
+   60  
+   61  	$onlyview = $onlyview2 = '';
+   ..
+  147  function mark_forum_read($fid)
+  148  {
+  149: 	global $mybb, $db;
+  150  
+  151  	// Can only do "true" tracking for registered users
+  ...
+  233  function mark_all_forums_read()
+  234  {
+  235: 	global $mybb, $db, $cache;
+  236  
+  237  	// Can only do "true" tracking for registered users
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_massmail.php:
+   17  function build_mass_mail_query($conditions)
+   18  {
+   19: 	global $db;
+   20  
+   21  	if(!is_array($conditions))
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_modcp.php:
+   17  function modcp_can_manage_user($uid)
+   18  {
+   19: 	global $mybb;
+   20  
+   21  	$user_permissions = user_permissions($uid);
+   ..
+   42  function fetch_forum_announcements($pid=0, $depth=1)
+   43  {
+   44: 	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums;
+   45  	static $forums_by_parent, $forum_cache, $parent_forums;
+   46  
+   ..
+  143  function send_report($report)
+  144  {
+  145: 	global $db, $lang, $forum, $mybb, $post, $thread;
+  146  
+  147  	$nummods = false;
+  ...
+  241  function add_report($report, $type = 'post')
+  242  {
+  243: 	global $cache, $db, $mybb;
+  244  
+  245  	$insert_array = array(
+  ...
+  276  function update_report($report)
+  277  {
+  278: 	global $db;
+  279  
+  280  	$update_array = array(
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_online.php:
+   19  function fetch_wol_activity($location, $nopermission=false)
+   20  {
+   21: 	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $ann_list, $eid_list, $plugins, $user, $parameters;
+   22  
+   23  	$user_activity = array();
+   ..
+  572  function build_friendly_wol_location($user_activity)
+  573  {
+  574: 	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $ann_list, $eid_list, $plugins, $parser, $mybb;
+  575: 	global $threads, $forums, $forums_linkto, $forum_cache, $posts, $announcements, $events, $usernames, $attachments;
+  576  
+  577  	// Fetch forum permissions for this user
+  ...
+ 1123  function build_wol_row($user)
+ 1124  {
+ 1125: 	global $mybb, $lang, $templates, $theme, $session, $db;
+ 1126  
+ 1127  	// We have a registered user
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_post.php:
+   18  function build_postbit($post, $post_type=0)
+   19  {
+   20: 	global $db, $altbg, $theme, $mybb, $postcounter, $profile_fields;
+   21: 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
+   22: 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
+   23: 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
+   24  
+   25  	$hascustomtitle = 0;
+   ..
+   67  	{
+   68  		case 1: // Message preview
+   69: 			global $forum;
+   70  			$parser_options['allow_html'] = $forum['allowhtml'];
+   71  			$parser_options['allow_mycode'] = $forum['allowmycode'];
+   ..
+   78  			break;
+   79  		case 2: // Private message
+   80: 			global $message, $pmid;
+   81  			$idtype = 'pmid';
+   82  			$parser_options['allow_html'] = $mybb->settings['pmsallowhtml'];
+   ..
+   90  			break;
+   91  		case 3: // Announcement
+   92: 			global $announcementarray, $message;
+   93  			$parser_options['allow_html'] = $announcementarray['allowhtml'];
+   94  			$parser_options['allow_mycode'] = $announcementarray['allowmycode'];
+   ..
+  101  			break;
+  102  		default: // Regular post
+  103: 			global $forum, $thread, $tid;
+  104  			$oldforum = $forum;
+  105  			$id = (int)$post['pid'];
+  ...
+  515  	if($post_type == 2 && $post['pmid'])
+  516  	{
+  517: 		global $replyall;
+  518  
+  519  		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");
+  ...
+  642  		$post_number = my_number_format($postcounter);
+  643  		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
+  644: 		global $forum, $thread;
+  645  
+  646  		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+  ...
+  821  function get_post_attachments($id, &$post)
+  822  {
+  823: 	global $attachcache, $mybb, $theme, $templates, $forumpermissions, $lang;
+  824  
+  825  	$validationcount = 0;
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_posting.php:
+   30  	if(!isset($rmdepth))
+   31  	{
+   32: 		global $mybb;
+   33  		$rmdepth = $mybb->settings['maxquotedepth'];
+   34  	}
+   ..
+  173  function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
+  174  {
+  175: 	global $parser, $lang, $plugins;
+  176  	if(!isset($parser))
+  177  	{
+  ...
+  199  	if($remove_message_quotes)
+  200  	{
+  201: 		global $mybb;
+  202  		$max_quote_depth = (int)$mybb->settings['maxquotedepth'];
+  203  		if($max_quote_depth)
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_rebuild.php:
+   14  function rebuild_stats()
+   15  {
+   16: 	global $db;
+   17  
+   18  	$query = $db->simple_select("forums", "SUM(threads) AS numthreads, SUM(posts) AS numposts, SUM(unapprovedthreads) AS numunapprovedthreads, SUM(unapprovedposts) AS numunapprovedposts, SUM(deletedthreads) AS numdeletedthreads, SUM(deletedposts) AS numdeletedposts");
+   ..
+   32  function rebuild_forum_counters($fid)
+   33  {
+   34: 	global $db;
+   35  
+   36  	// Fetch the number of threads and replies in this forum (Approved only)
+   ..
+   62  function rebuild_thread_counters($tid)
+   63  {
+   64: 	global $db;
+   65  
+   66   	$thread = get_thread($tid);
+   ..
+   98  function rebuild_poll_counters($pid)
+   99  {
+  100: 	global $db;
+  101  
+  102  	$query = $db->simple_select("polls", "pid, numoptions", "pid='".(int)$pid."'");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_search.php:
+   20  function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth='')
+   21  {
+   22: 	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
+   23  	$pid = (int)$pid;
+   24  
+   ..
+   95  function get_unsearchable_forums($pid="0", $first=1)
+   96  {
+   97: 	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
+   98  
+   99  	$pid = (int)$pid;
+  ...
+  179  function get_password_protected_forums($fids=array())
+  180  {
+  181: 	global $forum_cache, $mybb;
+  182  
+  183  	if(!is_array($fids))
+  ...
+  414  function privatemessage_perform_search_mysql($search)
+  415  {
+  416: 	global $mybb, $db, $lang;
+  417  
+  418  	$keywords = clean_keywords($search['keywords']);
+  ...
+  725  function helpdocument_perform_search_mysql($search)
+  726  {
+  727: 	global $mybb, $db, $lang;
+  728  
+  729  	$keywords = clean_keywords($search['keywords']);
+  ...
+  952  function perform_search_mysql($search)
+  953  {
+  954: 	global $mybb, $db, $lang, $cache;
+  955  
+  956  	$keywords = clean_keywords($search['keywords']);
+  ...
+ 1426  function perform_search_mysql_ft($search)
+ 1427  {
+ 1428: 	global $mybb, $db, $lang;
+ 1429  
+ 1430  	$keywords = clean_keywords_ft($search['keywords']);
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_task.php:
+   17  function run_task($tid=0)
+   18  {
+   19: 	global $db, $mybb, $cache, $plugins, $task, $lang;
+   20  
+   21  	// Run a specific task
+   ..
+   96  function add_task_log($task, $message)
+   97  {
+   98: 	global $db;
+   99  
+  100  	if(!$task['logging'])
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_time.php:
+  210  {
+  211  static $TZ,$tzo;
+  212: global $ADODB_DATETIME_CLASS;
+  213  
+  214  	if (!defined('ADODB_TEST_DATES')) $y = false;
+  ...
+  258  {
+  259  static $YRS;
+  260: global $_month_table_normal,$_month_table_leaf;
+  261  
+  262  	$d =  $origd - ($is_gmt ? 0 : adodb_get_gmt_diff_ts($origd));
+  ...
+  490  {
+  491  static $daylight;
+  492: global $ADODB_DATETIME_CLASS;
+  493  
+  494  	if ($d === false) return ($is_gmt)? @gmdate($fmt): @date($fmt);
+  ...
+  775  function adodb_strftime($fmt, $ts=false,$is_gmt=false)
+  776  {
+  777: global $ADODB_DATE_LOCALE;
+  778  
+  779  	if (!defined('ADODB_TEST_DATES')) {
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_upload.php:
+   19  function remove_attachment($pid, $posthash, $aid)
+   20  {
+   21: 	global $db, $mybb, $plugins;
+   22  	$aid = (int)$aid;
+   23  	$posthash = $db->escape_string($posthash);
+   ..
+   78  function remove_attachments($pid, $posthash="")
+   79  {
+   80: 	global $db, $mybb, $plugins;
+   81  
+   82  	if($pid)
+   ..
+  147  function remove_avatars($uid, $exclude="")
+  148  {
+  149: 	global $mybb, $plugins;
+  150  
+  151  	if(defined('IN_ADMINCP'))
+  ...
+  184  function upload_avatar($avatar=array(), $uid=0)
+  185  {
+  186: 	global $db, $mybb, $lang, $plugins, $cache;
+  187  
+  188  	$ret = array();
+  ...
+  346  function upload_attachment($attachment, $update_attachment=false)
+  347  {
+  348: 	global $mybb, $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
+  349  
+  350  	$posthash = $db->escape_string($mybb->get_input('posthash'));
+  ...
+  655  function delete_uploaded_file($path = '')
+  656  {
+  657: 	global $mybb, $plugins;
+  658  
+  659  	$deleted = false;
+  ...
+  689  function delete_upload_directory($path = '')
+  690  {
+  691: 	global $mybb, $plugins;
+  692  
+  693  	$deleted = false;
+  ...
+  724  function upload_file($file, $path, $filename="")
+  725  {
+  726: 	global $plugins, $mybb;
+  727  
+  728  	$upload = array();
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_user.php:
+   17  function user_exists($uid)
+   18  {
+   19: 	global $db;
+   20  
+   21  	$query = $db->simple_select("users", "COUNT(*) as user", "uid='".(int)$uid."'", array('limit' => 1));
+   ..
+   38  function username_exists($username)
+   39  {
+   40: 	global $db;
+   41  
+   42  	$options = array(
+   ..
+   56  function validate_password_from_username($username, $password)
+   57  {
+   58: 	global $db, $mybb;
+   59  
+   60  	$options = array(
+   ..
+   83  function validate_password_from_uid($uid, $password, $user = array())
+   84  {
+   85: 	global $db, $mybb;
+   86  	if(isset($mybb->user['uid']) && $mybb->user['uid'] == $uid)
+   87  	{
+   ..
+  133  function update_password($uid, $password, $salt="")
+  134  {
+  135: 	global $db, $plugins;
+  136  
+  137  	$newpassword = array();
+  ...
+  209  function update_salt($uid)
+  210  {
+  211: 	global $db;
+  212  
+  213  	$salt = generate_salt();
+  ...
+  228  function update_loginkey($uid)
+  229  {
+  230: 	global $db;
+  231  
+  232  	$loginkey = generate_loginkey();
+  ...
+  251  function add_subscribed_thread($tid, $notification=1, $uid="")
+  252  {
+  253: 	global $mybb, $db;
+  254  
+  255  	if(!$uid)
+  ...
+  298  function remove_subscribed_thread($tid, $uid="")
+  299  {
+  300: 	global $mybb, $db;
+  301  
+  302  	if(!$uid)
+  ...
+  324  function add_subscribed_forum($fid, $uid="")
+  325  {
+  326: 	global $mybb, $db;
+  327  
+  328  	if(!$uid)
+  ...
+  363  function remove_subscribed_forum($fid, $uid="")
+  364  {
+  365: 	global $mybb, $db;
+  366  
+  367  	if(!$uid)
+  ...
+  385  function usercp_menu()
+  386  {
+  387: 	global $mybb, $templates, $theme, $plugins, $lang, $usercpnav, $usercpmenu;
+  388  
+  389  	$lang->load("usercpnav");
+  ...
+  400  	// Run the plugin hooks
+  401  	$plugins->run_hooks("usercp_menu");
+  402: 	global $usercpmenu;
+  403  
+  404  	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
+  ...
+  413  function usercp_menu_messenger()
+  414  {
+  415: 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+  416  
+  417  	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
+  ...
+  475  function usercp_menu_profile()
+  476  {
+  477: 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+  478  
+  479  	$changenameop = '';
+  ...
+  511  function usercp_menu_misc()
+  512  {
+  513: 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+  514  
+  515  	$draftstart = $draftend = '';
+  ...
+  551  function get_usertitle($uid="")
+  552  {
+  553: 	global $db, $mybb;
+  554  
+  555  	if($mybb->user['uid'] == $uid)
+  ...
+  592  function update_pm_count($uid=0, $count_to_update=7)
+  593  {
+  594: 	global $db, $mybb;
+  595  
+  596  	// If no user id, assume that we mean the current logged in user.
+  ...
+  639  function get_pm_folder_name($fid, $name="")
+  640  {
+  641: 	global $lang;
+  642  
+  643  	if($name != '')
+  ...
+  673  function generate_question($old_qid=0)
+  674  {
+  675: 	global $db;
+  676  
+  677  	if($db->type == 'pgsql' || $db->type == 'sqlite')
+  ...
+  727  function purgespammer_show($post_count, $usergroup, $uid)
+  728  {
+  729: 		global $mybb, $cache;
+  730  
+  731  		// only show this if the current user has permission to use it and the user has less than the post limit for using this tool
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\functions_warnings.php:
+   11  function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
+   12  {
+   13: 	global $db;
+   14  
+   15  	// we have some warning levels we need to revoke
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\mailhandlers\php.php:
+   34  	function send()
+   35  	{
+   36: 		global $lang, $mybb;
+   37  
+   38  		// For some reason sendmail/qmail doesn't like \r\n
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\mailhandlers\smtp.php:
+  138  	function __construct()
+  139  	{
+  140: 		global $mybb;
+  141  
+  142  		$protocol = '';
+  ...
+  207  	function send()
+  208  	{
+  209: 		global $lang, $mybb;
+  210  
+  211  		if(!$this->connected())
+  ...
+  283  	function connect()
+  284  	{
+  285: 		global $lang, $mybb;
+  286  
+  287  		$this->connection = @fsockopen($this->host, $this->port, $error_number, $error_string, $this->timeout);
+  ...
+  365  	function auth($auth_methods)
+  366  	{
+  367: 		global $lang, $mybb;
+  368  
+  369  		$auth_methods = explode(" ", trim($auth_methods));
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\plugins\hello.php:
+   19  if(defined('THIS_SCRIPT'))
+   20  {
+   21:     global $templatelist;
+   22  
+   23      if(isset($templatelist))
+   ..
+   58  function hello_info()
+   59  {
+   60: 	global $lang;
+   61  	$lang->load('hello');
+   62  
+   ..
+   91  function hello_activate()
+   92  {
+   93: 	global $db, $lang;
+   94  	$lang->load('hello');
+   95  
+   ..
+  353  function hello_install()
+  354  {
+  355: 	global $db;
+  356  
+  357  	// Create our entries table
+  ...
+  377  function hello_is_installed()
+  378  {
+  379: 	global $db;
+  380  
+  381  	// If the table exists then it means the plugin is installed because we only drop it on uninstallation
+  ...
+  390  function hello_uninstall()
+  391  {
+  392: 	global $db, $mybb;
+  393  
+  394  	if($mybb->request_method != 'post')
+  395  	{
+  396: 		global $page, $lang;
+  397  		$lang->load('hello');
+  398  
+  ...
+  443  function hello_settings()
+  444  {
+  445: 	global $lang;
+  446  
+  447  	// Load our language file
+  ...
+  454  function hello_index()
+  455  {
+  456: 	global $mybb;
+  457  
+  458  	// Only run this function is the setting is set to yes
+  ...
+  462  	}
+  463  
+  464: 	global $db, $lang, $templates, $hello, $theme;
+  465  
+  466  	// Load our language file
+  ...
+  495  function hello_post(&$post)
+  496  {
+  497: 	global $settings;
+  498  
+  499  	// Only run this function is the setting is set to yes
+  ...
+  503  	}
+  504  
+  505: 	global $lang, $templates;
+  506  
+  507  	// Load our language file
+  ...
+  516  	if(!isset($messages))
+  517  	{
+  518: 		global $db;
+  519  
+  520  		// Retreive all messages from the database
+  ...
+  545  function hello_new()
+  546  {
+  547: 	global $mybb;
+  548  
+  549  	// If we're not running the 'hello' action as specified in our form, get out of there.
+  ...
+  559  	}
+  560  
+  561: 	global $lang;
+  562  
+  563  	// Correct post key? This is important to prevent CSRF
+  ...
+  575  	}
+  576  
+  577: 	global $db;
+  578  
+  579  	// Escape input data
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\backupdb.php:
+   11  function task_backupdb($task)
+   12  {
+   13: 	global $db, $config, $lang, $plugins;
+   14  	static $contents;
+   15  
+   ..
+  133  function clear_overflow($fp, &$contents)
+  134  {
+  135: 	global $mybb;
+  136  
+  137  	if(function_exists('gzopen'))
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\checktables.php:
+   11  function task_checktables($task)
+   12  {
+   13: 	global $db, $mybb, $lang, $plugins;
+   14  
+   15  	// Sorry SQLite, you don't have a decent way of checking if the table is corrupted or not.
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\dailycleanup.php:
+   11  function task_dailycleanup($task)
+   12  {
+   13: 	global $mybb, $db, $cache, $lang, $plugins;
+   14  
+   15  	require_once MYBB_ROOT."inc/functions_user.php";
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\delayedmoderation.php:
+   11  function task_delayedmoderation($task)
+   12  {
+   13: 	global $db, $lang, $plugins;
+   14  
+   15  	require_once MYBB_ROOT."inc/class_moderation.php";
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\hourlycleanup.php:
+   11  function task_hourlycleanup($task)
+   12  {
+   13: 	global $db, $lang, $plugins;
+   14  
+   15  	$time = array(
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\logcleanup.php:
+   11  function task_logcleanup($task)
+   12  {
+   13: 	global $mybb, $db, $lang, $plugins;
+   14  
+   15  	// Clear out old admin logs
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\massmail.php:
+   20  function task_massmail($task)
+   21  {
+   22: 	global $db, $mybb, $lang, $plugins;
+   23  
+   24  	$query = $db->simple_select("massemails", "*", "senddate <= '".TIME_NOW."' AND status IN (1,2)");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\promotions.php:
+   11  function task_promotions($task)
+   12  {
+   13: 	global $mybb, $db, $lang, $cache, $plugins;
+   14  
+   15  	$usergroups = $cache->read("usergroups");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\recachestylesheets.php:
+   11  function task_recachestylesheets($task)
+   12  {
+   13: 	global $mybb, $db, $lang;
+   14  
+   15  	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\threadviews.php:
+   11  function task_threadviews($task)
+   12  {
+   13: 	global $mybb, $db, $lang, $plugins;
+   14  
+   15  	if($mybb->settings['delayedthreadviews'] != 1)
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\usercleanup.php:
+   11  function task_usercleanup($task)
+   12  {
+   13: 	global $db, $lang, $cache, $plugins;
+   14  
+   15  	// Expire any old warnings
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\userpruning.php:
+   11  function task_userpruning($task)
+   12  {
+   13: 	global $db, $lang, $mybb, $cache, $plugins;
+   14  
+   15  	if($mybb->settings['enablepruning'] != 1)
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\inc\tasks\versioncheck.php:
+   11  function task_versioncheck($task)
+   12  {
+   13: 	global $cache, $lang, $mybb;
+   14  
+   15  	$current_version = rawurlencode($mybb->version_code);
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\index.php:
+  189  function intro()
+  190  {
+  191: 	global $output, $mybb, $lang;
+  192  
+  193  	$output->print_header($lang->welcome, 'welcome');
+  ...
+  202  function license_agreement()
+  203  {
+  204: 	global $output, $lang, $mybb;
+  205  
+  206  	ob_start();
+  ...
+ 1016  function requirements_check()
+ 1017  {
+ 1018: 	global $output, $mybb, $dboptions, $lang;
+ 1019  
+ 1020  	$mybb->input['action'] = "requirements_check";
+ ....
+ 1201  function database_info()
+ 1202  {
+ 1203: 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
+ 1204  
+ 1205  	$mybb->input['action'] = 'database_info';
+ ....
+ 1379  function create_tables()
+ 1380  {
+ 1381: 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
+ 1382  
+ 1383  	$mybb->input['dbengine'] = $mybb->get_input('dbengine');
+ ....
+ 1616  function populate_tables()
+ 1617  {
+ 1618: 	global $output, $lang;
+ 1619  
+ 1620  	require MYBB_ROOT.'inc/config.php';
+ ....
+ 1660  function insert_templates()
+ 1661  {
+ 1662: 	global $mybb, $output, $cache, $db, $lang;
+ 1663  
+ 1664  	require MYBB_ROOT.'inc/config.php';
+ ....
+ 1770  function configure()
+ 1771  {
+ 1772: 	global $output, $mybb, $errors, $lang;
+ 1773  
+ 1774  	$output->print_header($lang->board_config, 'config');
+ ....
+ 1882  function create_admin_user()
+ 1883  {
+ 1884: 	global $output, $mybb, $errors, $db, $lang;
+ 1885  
+ 1886  	$mybb->input['action'] = "adminuser";
+ ....
+ 2113  function install_done()
+ 2114  {
+ 2115: 	global $output, $db, $mybb, $errors, $cache, $lang;
+ 2116  
+ 2117  	if(empty($mybb->input['adminuser']))
+ ....
+ 2417  function write_settings()
+ 2418  {
+ 2419: 	global $db;
+ 2420  
+ 2421  	$settings = '';
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\output.php:
+   19  	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
+   20  	{
+   21: 		global $mybb, $lang;
+   22  
+   23  		if($lang->title)
+   ..
+  107  	function print_error($message)
+  108  	{
+  109: 		global $lang;
+  110  		if(!$this->doneheader)
+  111  		{
+  ...
+  121  	function print_footer($nextact="")
+  122  	{
+  123: 		global $lang, $footer_extra;
+  124  		if($nextact && $this->openedform)
+  125  		{
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade1.php:
+   22  function upgrade1_dbchanges()
+   23  {
+   24: 	global $db, $output;
+   25  
+   26  	$output->print_header("Database Changes since Release Candidate 2");
+   ..
+  221  function upgrade1_dbchanges2()
+  222  {
+  223: 	global $db, $output;
+  224  
+  225  	$output->print_header("Database Changes since Release Candidate 2");
+  ...
+  271  {
+  272  
+  273: 	global $db, $output;
+  274  
+  275  	$output->print_header("Database Changes since Release Candidate 2");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade10.php:
+   24  function upgrade10_dbchanges()
+   25  {
+   26: 	global $db, $output, $mybb;
+   27  
+   28  	$output->print_header("Performing Queries");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade11.php:
+   24  function upgrade11_dbchanges()
+   25  {
+   26: 	global $db, $output, $mybb;
+   27  
+   28  	$output->print_header("Performing Queries");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade12.php:
+   24  // We need to globalize $db here because when this script is called
+   25  // during load_module $db is not globalized in the function
+   26: global $db;
+   27  
+   28  // FIRST STEP IS FOR INTEGER CONVERSION PROJECT
+   ..
+   30  function upgrade12_dbchanges()
+   31  {
+   32: 	global $db, $output, $mybb;
+   33  
+   34  	$output->print_header("Integer Conversion Project");
+   ..
+  177  			echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$val}\" />";
+  178  		}
+  179: 		global $footer_extra;
+  180  		$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  181  		$output->print_footer($next_act);
+  ...
+  189  		echo "<p><strong>The integrer conversion process is now complete.</strong></p>";
+  190  		echo "<p>Click next to continue with the upgrade process.</p>";
+  191: 		global $footer_extra;
+  192  		$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  193  
+  ...
+  198  function upgrade12_dbchanges1()
+  199  {
+  200: 	global $db, $output, $mybb;
+  201  
+  202  	$output->print_header("Performing Queries");
+  ...
+  213  	$output->print_contents($contents);
+  214  
+  215: 	global $footer_extra;
+  216  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  217  
+  ...
+  221  function upgrade12_dbchanges_post1()
+  222  {
+  223: 	global $db, $output, $mybb;
+  224  
+  225  	$output->print_header("Performing Queries");
+  ...
+  238  	$output->print_contents($contents);
+  239  
+  240: 	global $footer_extra;
+  241  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  242  
+  ...
+  246  function upgrade12_dbchanges_post2()
+  247  {
+  248: 	global $db, $output, $mybb;
+  249  
+  250  	$output->print_header("Performing Queries");
+  ...
+  274  	$output->print_contents($contents);
+  275  
+  276: 	global $footer_extra;
+  277  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  278  
+  ...
+  282  function upgrade12_dbchanges_user()
+  283  {
+  284: 	global $db, $output, $mybb;
+  285  
+  286  	$output->print_header("Performing Queries");
+  ...
+  300  	$output->print_contents($contents);
+  301  
+  302: 	global $footer_extra;
+  303  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  304  
+  ...
+  308  function upgrade12_dbchanges2()
+  309  {
+  310: 	global $db, $output, $mybb;
+  311  
+  312  	$output->print_header("Performing Queries");
+  ...
+  769  	$output->print_contents($contents);
+  770  
+  771: 	global $footer_extra;
+  772  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  773  
+  ...
+  777  function upgrade12_dbchanges3()
+  778  {
+  779: 	global $db, $output, $mybb;
+  780  
+  781  	$output->print_header("Converting Ban Filters");
+  ...
+  845  	$output->print_contents($contents);
+  846  
+  847: 	global $footer_extra;
+  848  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  849  
+  ...
+  853  function upgrade12_dbchanges4()
+  854  {
+  855: 	global $db, $output, $mybb;
+  856  
+  857  	$output->print_header("Performing Queries");
+  ...
+ 1076  	$output->print_contents($contents);
+ 1077  
+ 1078: 	global $footer_extra;
+ 1079  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1080  
+ ....
+ 1084  function upgrade12_dbchanges5()
+ 1085  {
+ 1086: 	global $db, $output, $mybb;
+ 1087  
+ 1088  	$output->print_header("Performing Queries");
+ ....
+ 1293  	$output->print_contents($contents);
+ 1294  
+ 1295: 	global $footer_extra;
+ 1296  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1297  
+ ....
+ 1301  function upgrade12_redoconfig()
+ 1302  {
+ 1303: 	global $db, $output, $orig_config, $mybb;
+ 1304  
+ 1305  	$config = $orig_config;
+ ....
+ 1448  	echo "<p>Click next to continue with the upgrade process.</p>";
+ 1449  
+ 1450: 	global $footer_extra;
+ 1451  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1452  
+ ....
+ 1456  function upgrade12_dbchanges6()
+ 1457  {
+ 1458: 	global $db, $output;
+ 1459  
+ 1460  	$output->print_header("Post IP Conversion");
+ ....
+ 1520  	$output->print_contents($contents);
+ 1521  
+ 1522: 	global $footer_extra;
+ 1523  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1524  
+ ....
+ 1528  function upgrade12_dbchanges7()
+ 1529  {
+ 1530: 	global $db, $output;
+ 1531  
+ 1532  	$output->print_header("User IP Conversion");
+ ....
+ 1604  	$output->print_contents($contents);
+ 1605  
+ 1606: 	global $footer_extra;
+ 1607  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1608  
+ ....
+ 1612  function upgrade12_dbchanges8()
+ 1613  {
+ 1614: 	global $db, $output;
+ 1615  
+ 1616  	$output->print_header("Event Conversion");
+ ....
+ 1769  	$output->print_contents($contents);
+ 1770  
+ 1771: 	global $footer_extra;
+ 1772  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1773  
+ ....
+ 1777  function upgrade12_redothemes()
+ 1778  {
+ 1779: 	global $db, $output, $config, $mybb;
+ 1780  
+ 1781  	$output->print_header("Converting themes");
+ ....
+ 1991  	echo "<p>Click next to continue with the upgrade process.</p>";
+ 1992  
+ 1993: 	global $footer_extra;
+ 1994  	//$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1995  
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade13.php:
+   24  function upgrade13_dbchanges()
+   25  {
+   26: 	global $db, $output, $mybb;
+   27  
+   28  	$output->print_header("Performing Queries");
+   ..
+   82  function upgrade13_dbchanges1()
+   83  {
+   84: 	global $db, $output;
+   85  
+   86  	$output->print_header("Post IP Repair Conversion");
+   ..
+  146  	$output->print_contents($contents);
+  147  
+  148: 	global $footer_extra;
+  149  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  150  
+  ...
+  154  function upgrade13_dbchanges2()
+  155  {
+  156: 	global $db, $output;
+  157  
+  158  	$output->print_header("User IP Repair Conversion");
+  ...
+  230  	$output->print_contents($contents);
+  231  
+  232: 	global $footer_extra;
+  233  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  234  
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade14.php:
+   24  function upgrade14_dbchanges()
+   25  {
+   26: 	global $db, $output, $mybb;
+   27  
+   28  	$output->print_header("Performing Queries");
+   ..
+  151  function upgrade14_dbchanges1()
+  152  {
+  153: 	global $db, $output;
+  154  
+  155  	$output->print_header("Performing Queries");
+  ...
+  170  function upgrade14_dbchanges2()
+  171  {
+  172: 	global $db, $output;
+  173  
+  174  	$output->print_header("Cleaning up old Settings &amp; Groups");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade15.php:
+   24  function upgrade15_dbchanges()
+   25  {
+   26: 	global $db, $output, $mybb, $cache;
+   27  
+   28  	$output->print_header("Performing Queries");
+   ..
+   71  function upgrade15_usernameverify()
+   72  {
+   73: 	global $db, $output, $mybb;
+   74  
+   75  	$output->print_header("Performing Queries");
+   ..
+   85  function upgrade15_usernameupdate()
+   86  {
+   87: 	global $db, $output, $mybb, $plugins;
+   88  
+   89  	$output->print_header("Performing Queries");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade17.php:
+   24  function upgrade17_dbchanges()
+   25  {
+   26: 	global $db, $output, $mybb, $cache;
+   27  
+   28  	$output->print_header("Performing Queries");
+   ..
+   37  	}
+   38  
+   39: 	global $footer_extra;
+   40  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+   41  
+   ..
+   47  function upgrade17_dbchanges2()
+   48  {
+   49: 	global $db, $output, $mybb, $cache;
+   50  
+   51  	$output->print_header("Performing Queries");
+   ..
+  163  	$db->update_query("calendars", array('allowvideocode' => '1'));
+  164  
+  165: 	global $footer_extra;
+  166  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  167  
+  ...
+  173  function upgrade17_dbchanges3()
+  174  {
+  175: 	global $db, $output, $mybb;
+  176  
+  177  	$output->print_header("Performing Queries");
+  ...
+  272  	$output->print_contents($contents);
+  273  
+  274: 	global $footer_extra;
+  275  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  276  
+  ...
+  280  function upgrade17_dbchanges4()
+  281  {
+  282: 	global $db, $output, $mybb;
+  283  
+  284  	$output->print_header("Performing Queries");
+  ...
+  392  	$output->print_contents($contents);
+  393  
+  394: 	global $footer_extra;
+  395  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  396  
+  ...
+  400  function upgrade17_dbchanges5()
+  401  {
+  402: 	global $db, $output, $mybb, $cache;
+  403  
+  404  	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
+  ...
+  462  	$output->print_contents($contents);
+  463  
+  464: 	global $footer_extra;
+  465  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  466  
+  ...
+  470  function upgrade17_dbchanges6()
+  471  {
+  472: 	global $db, $output;
+  473  
+  474  	$output->print_header("Post IP Repair Conversion");
+  ...
+  530  	$output->print_contents($contents);
+  531  
+  532: 	global $footer_extra;
+  533  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  534  
+  ...
+  538  function upgrade17_dbchanges7()
+  539  {
+  540: 	global $db, $output;
+  541  
+  542  	$output->print_header("User IP Repair Conversion");
+  ...
+  605  	$output->print_contents($contents);
+  606  
+  607: 	global $footer_extra;
+  608  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  609  
+  ...
+  613  function upgrade17_redoconfig()
+  614  {
+  615: 	global $db, $output, $orig_config, $mybb;
+  616  
+  617  	$config = $orig_config;
+  ...
+  807  	echo "<p>Click next to continue with the upgrade process.</p>";
+  808  
+  809: 	global $footer_extra;
+  810  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  811  
+  ...
+  814  function upgrade17_updatecss()
+  815  {
+  816: 	global $db, $output, $orig_config, $mybb;
+  817  
+  818  	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
+  ...
+  855  	echo "<p>Click next to continue with the upgrade process.</p>";
+  856  
+  857: 	global $footer_extra;
+  858  	//$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  859  
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade18.php:
+   23  function upgrade18_dbchanges()
+   24  {
+   25: 	global $db, $output, $mybb;
+   26  
+   27  	$output->print_header("Performing Queries");
+   ..
+   45  function upgrade18_updatecache()
+   46  {
+   47: 	global $cache, $output;
+   48  
+   49  	$output->print_header("Updating Cache");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade2.php:
+   22  function upgrade2_dbchanges()
+   23  {
+   24: 	global $db, $output;
+   25  
+   26  	$output->print_header("Database Changes since Release Candidate 3");
+   ..
+  173  function upgrade2_dbchanges2()
+  174  {
+  175: 	global $db, $output;
+  176  
+  177  	$output->print_header("Database Changes since Release Candidate 3");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade20.php:
+   23  function upgrade20_dbchanges()
+   24  {
+   25: 	global $db, $output, $mybb;
+   26  
+   27  	$output->print_header("Repairing Database Sequences");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade21.php:
+   23  function upgrade21_dbchanges()
+   24  {
+   25: 	global $cache, $db, $output, $mybb;
+   26  
+   27  	$output->print_header("Updating Database");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade23.php:
+   24  function upgrade23_dbchanges()
+   25  {
+   26: 	global $db, $output;
+   27  
+   28  	$output->print_header("Updating Database");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade26.php:
+   23  function upgrade26_dbchanges()
+   24  {
+   25: 	global $db, $output;
+   26  
+   27  	$output->print_header("Updating Database");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade3.php:
+   24  function upgrade3_dbchanges()
+   25  {
+   26: 	global $db, $output;
+   27  
+   28  	$output->print_header("Attachment Conversion to Files");
+   ..
+   78  function upgrade3_convertattachments()
+   79  {
+   80: 	global $db, $output;
+   81  
+   82  	$output->print_header("Attachment Conversion to Files");
+   ..
+  218  function upgrade3_convertavatars()
+  219  {
+  220: 	global $db, $output;
+  221  
+  222  	$output->print_header("Avatar Conversion to Files");
+  ...
+  320  function upgrade3_dbchanges2()
+  321  {
+  322: 	global $db, $output;
+  323  
+  324  	$output->print_header("Database Changes");
+  ...
+  643  function upgrade3_dbchanges3()
+  644  {
+  645: 	global $db, $output;
+  646  
+  647  	$output->print_header("Database Field Size Changes");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade30.php:
+   23  function upgrade30_dbchanges()
+   24  {
+   25: 	global $cache, $output, $mybb, $db;
+   26  
+   27  	$output->print_header("Updating Database");
+   ..
+  330  	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
+  331  
+  332: 	global $footer_extra;
+  333  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  334  
+  ...
+  339  function upgrade30_dbchanges2()
+  340  {
+  341: 	global $cache, $output, $mybb, $db;
+  342  
+  343  	$output->print_header("Updating Database");
+  ...
+  480  	$db->update_query('forums', array('usethreadcounts' => 1), 'usepostcounts = 1');
+  481  
+  482: 	global $footer_extra;
+  483  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  484  
+  ...
+  489  function upgrade30_dbchanges3()
+  490  {
+  491: 	global $cache, $output, $mybb, $db;
+  492  
+  493  	$output->print_header("Updating Database");
+  ...
+  616  	}
+  617  
+  618: 	global $footer_extra;
+  619  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  620  
+  ...
+  625  function upgrade30_dbchanges4()
+  626  {
+  627: 	global $cache, $output, $mybb, $db;
+  628  
+  629  	$output->print_header("Updating Database");
+  ...
+  747  	$db->update_query("maillogs", $update_array, "tid > '0'");
+  748  
+  749: 	global $footer_extra;
+  750  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  751  
+  ...
+  756  function upgrade30_dbchanges5()
+  757  {
+  758: 	global $cache, $output, $mybb, $db;
+  759  
+  760  	$output->print_header("Updating Database");
+  ...
+  861  	}
+  862  
+  863: 	global $footer_extra;
+  864  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+  865  
+  ...
+  870  function upgrade30_dbchanges6()
+  871  {
+  872: 	global $cache, $output, $mybb, $db;
+  873  
+  874  	$output->print_header("Updating Database");
+  ...
+ 1240  function upgrade30_threadcount()
+ 1241  {
+ 1242: 	global $db, $output;
+ 1243  
+ 1244  	$output->print_header("Counting user thread count");
+ ....
+ 1304  	$output->print_contents($contents);
+ 1305  
+ 1306: 	global $footer_extra;
+ 1307  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1308  
+ ....
+ 1312  function upgrade30_dbchanges_optimize1()
+ 1313  {
+ 1314: 	global $output, $mybb, $db;
+ 1315  
+ 1316  	$output->print_header("Optimizing Database");
+ ....
+ 1408  	}
+ 1409  
+ 1410: 	global $footer_extra;
+ 1411  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1412  
+ ....
+ 1417  function upgrade30_dbchanges_optimize2()
+ 1418  {
+ 1419: 	global $output, $mybb, $db;
+ 1420  
+ 1421  	$output->print_header("Optimizing Database");
+ ....
+ 1507  	}
+ 1508  
+ 1509: 	global $footer_extra;
+ 1510  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1511  
+ ....
+ 1516  function upgrade30_dbchanges_optimize3()
+ 1517  {
+ 1518: 	global $cache, $output, $mybb, $db;
+ 1519  
+ 1520  	$output->print_header("Optimizing Database");
+ ....
+ 1582  	}
+ 1583  
+ 1584: 	global $footer_extra;
+ 1585  	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 1586  
+ ....
+ 1591  function upgrade30_dbchanges_optimize4()
+ 1592  {
+ 1593: 	global $cache, $output, $mybb, $db;
+ 1594  
+ 1595  	$output->print_header("Optimizing Database");
+ ....
+ 1670  function upgrade30_dbchanges_smilies()
+ 1671  {
+ 1672: 	global $cache, $output, $db;
+ 1673  
+ 1674  	$output->print_header("Updating Smilies");
+ ....
+ 1736  function upgrade30_dbchanges_ip()
+ 1737  {
+ 1738: 	global $mybb, $db, $output;
+ 1739  
+ 1740  	$output->print_header("IP Conversion");
+ ....
+ 2127  		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversion.</p>";
+ 2128  
+ 2129: 		global $footer_extra;
+ 2130  		$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+ 2131  		$nextact = "30_dbchanges_ip";
+ ....
+ 2139  function upgrade30_updatetheme()
+ 2140  {
+ 2141: 	global $db, $mybb, $output, $config;
+ 2142  
+ 2143  	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
+ ....
+ 2402  function upgrade30_acppin()
+ 2403  {
+ 2404: 	global $config, $output;
+ 2405  
+ 2406  	$output->print_header("Add an ACP PIN");
+ ....
+ 2430  function upgrade30_acppin_submit()
+ 2431  {
+ 2432: 	global $db, $mybb, $output, $config;
+ 2433  
+ 2434  	$output->print_header("Writing the config file");
+ ....
+ 2494  function recache_existing_styles()
+ 2495  {
+ 2496: 	global $db;
+ 2497  
+ 2498  	$query = $db->simple_select('themestylesheets', '*');
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade31.php:
+   23  function upgrade31_dbchanges()
+   24  {
+   25: 	global $db, $output;
+   26  
+   27  	$output->print_header("Updating Database");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade32.php:
+   23  function upgrade32_dbchanges()
+   24  {
+   25: 	global $db, $output;
+   26  	
+   27  	// Unset old ACP cookies from front-end since they're not needed anymore
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade33.php:
+   23  function upgrade33_dbchanges()
+   24  {
+   25: 	global $db, $output;
+   26  
+   27  	$output->print_header("Updating Database");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade4.php:
+   24  function upgrade4_dbchanges()
+   25  {
+   26: 	global $db, $output;
+   27  
+   28  	$output->print_header("Performing Queries");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade5.php:
+   25  function upgrade5_dbchanges()
+   26  {
+   27: 	global $db, $output, $mybb;
+   28  
+   29  	$output->print_header("Performing Queries");
+   ..
+  408  function upgrade5_redoconfig()
+  409  {
+  410: 	global $db, $output, $config, $mybb;
+  411  	$output->print_header("Rewriting config.php");
+  412  
+  ...
+  520  function upgrade5_lastposts()
+  521  {
+  522: 	global $db, $output;
+  523  	$output->print_header("Rebuilding Last Post Columns");
+  524  
+  ...
+  592  function upgrade5_forumlastposts()
+  593  {
+  594: 	global $db, $output;
+  595  	$output->print_header("Rebuilding Forum Last Posts");
+  596  	echo "<p>Rebuilding last post information for forums..</p>";
+  ...
+  607  function upgrade5_indexes()
+  608  {
+  609: 	global $db, $output;
+  610  
+  611  	$output->print_header("Indexing");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade6.php:
+   25  function upgrade6_dbchanges()
+   26  {
+   27: 	global $db, $output, $mybb;
+   28  
+   29  	$output->print_header("Performing Queries");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\resources\upgrade8.php:
+   25  function upgrade8_dbchanges()
+   26  {
+   27: 	global $db, $output, $mybb;
+   28  
+   29  	$output->print_header("Performing Queries");
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\install\upgrade.php:
+  386  function upgradethemes()
+  387  {
+  388: 	global $output, $db, $system_upgrade_detail, $lang, $mybb;
+  389  
+  390  	$output->print_header($lang->upgrade_templates_reverted);
+  ...
+  536  function buildsettings()
+  537  {
+  538: 	global $db, $output, $system_upgrade_detail, $lang;
+  539  
+  540  	if(!is_writable(MYBB_ROOT."inc/settings.php"))
+  ...
+  554  function buildcaches()
+  555  {
+  556: 	global $db, $output, $cache, $lang, $mybb;
+  557  
+  558  	$output->print_header($lang->upgrade_datacache_building);
+  ...
+  597  function upgradedone()
+  598  {
+  599: 	global $db, $output, $mybb, $lang, $config, $plugins;
+  600  
+  601  	ob_start();
+  ...
+  669  function whatsnext()
+  670  {
+  671: 	global $output, $db, $system_upgrade_detail, $lang;
+  672  
+  673  	if($system_upgrade_detail['revert_all_templates'] > 0)
+  ...
+  685  function next_function($from, $func="dbchanges")
+  686  {
+  687: 	global $oldvers, $system_upgrade_detail, $currentscript, $cache;
+  688  
+  689  	load_module("upgrade".$from.".php");
+  ...
+  715  function load_module($module)
+  716  {
+  717: 	global $system_upgrade_detail, $currentscript, $upgrade_detail;
+  718  
+  719  	require_once INSTALL_ROOT."resources/".$module;
+  ...
+  734  function get_upgrade_store($title)
+  735  {
+  736: 	global $db;
+  737  
+  738  	$query = $db->simple_select("upgrade_data", "*", "title='".$db->escape_string($title)."'");
+  ...
+  743  function add_upgrade_store($title, $contents)
+  744  {
+  745: 	global $db;
+  746  
+  747  	$replace_array = array(
+  ...
+  754  function sync_settings($redo=0)
+  755  {
+  756: 	global $db;
+  757  
+  758  	$settingcount = $groupcount = 0;
+  ...
+  954  function sync_tasks($redo=0)
+  955  {
+  956: 	global $db;
+  957  
+  958  	$taskcount = 0;
+  ...
+ 1076  function write_settings()
+ 1077  {
+ 1078: 	global $db;
+ 1079  	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
+ 1080  	while($setting = $db->fetch_array($query))
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\misc.php:
+  969  function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="")
+  970  {
+  971: 	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unexp, $templates;
+  972  
+  973  	$pid = (int)$pid;
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\moderation.php:
+ 3051  function getids($id, $type)
+ 3052  {
+ 3053: 	global $mybb;
+ 3054  
+ 3055  	$newids = array();
+ ....
+ 3082  function getallids($id, $type)
+ 3083  {
+ 3084: 	global $db, $mybb;
+ 3085  
+ 3086  	$ids = array();
+ ....
+ 3165  function is_moderator_by_pids($posts, $permission='')
+ 3166  {
+ 3167: 	global $db, $mybb;
+ 3168  
+ 3169  	// Speedy determination for supermods/admins and guests
+ ....
+ 3209  function is_moderator_by_tids($threads, $permission='')
+ 3210  {
+ 3211: 	global $db, $mybb;
+ 3212  
+ 3213  	// Speedy determination for supermods/admins and guests
+ ....
+ 3249  function moderation_redirect($url, $message="", $title="")
+ 3250  {
+ 3251: 	global $mybb;
+ 3252  	if(!empty($mybb->input['url']))
+ 3253  	{
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\printthread.php:
+  194  function makeprintablenav($pid="0", $depth="--")
+  195  {
+  196: 	global $mybb, $db, $pforumcache, $fid, $forum, $lang;
+  197  	if(!is_array($pforumcache))
+  198  	{
+  ...
+  231  function printthread_multipage($count, $perpage, $current_page, $url)
+  232  {
+  233: 	global $lang, $templates;
+  234  	$multipage = "";
+  235  	if($count > $perpage)
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\showthread.php:
+ 1535  function buildtree($replyto="0", $indent="0")
+ 1536  {
+ 1537: 	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser;
+ 1538  
+ 1539  	if($indent)
+
+C:\wamp64\www\mybb-integrator\test\vendor\mybb1.8.5\xmlhttp.php:
+ 1023  function xmlhttp_error($message)
+ 1024  {
+ 1025: 	global $charset;
+ 1026  
+ 1027  	// Send our headers.
+
+723 matches across 119 files
