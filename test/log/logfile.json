@@ -1,0 +1,22 @@
+{
+    "event": "suiteStart",
+    "suite": ".",
+    "tests": 1
+}{
+    "event": "suiteStart",
+    "suite": "ForumTest",
+    "tests": 1
+}{
+    "event": "testStart",
+    "suite": "ForumTest",
+    "test": "ForumTest::testCheckForumPassword"
+}{
+    "event": "test",
+    "suite": "ForumTest",
+    "test": "ForumTest::testCheckForumPassword",
+    "status": "pass",
+    "time": 0,
+    "trace": [],
+    "message": "",
+    "output": ""
+}
