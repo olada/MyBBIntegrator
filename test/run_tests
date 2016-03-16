@@ -1,0 +1,1 @@
+phpunit --configuration phpunit.mybb-1.8.5.xml
