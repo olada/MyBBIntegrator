@@ -1,7 +1,0 @@
-<phpunit bootstrap="src/autoload.php">
-  <testsuites>
-    <testsuite name="mybb-version-1.8.5">
-      <directory>mybb1.8.5</directory>
-    </testsuite>
-  </testsuites>
-</phpunit>
