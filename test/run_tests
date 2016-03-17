@@ -1,1 +1,1 @@
-phpunit --configuration phpunit.mybb-1.8.5.xml
+php /c/Users/daolah/software/phpunit-5.2.12.phar --configuration phpunit.mybb-1.8.5.xml
