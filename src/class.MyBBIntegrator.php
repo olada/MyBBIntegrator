@@ -35,35 +35,62 @@ class MyBBIntegrator
 	 *
 	 * @var object
 	*/
-	var $cache;
+	private $cache;
 	
 	/**
 	 * Config Data of MyBB
 	 *
 	 * @var array
 	*/
-	var $config;
+	private $config;
 	
 	/**
 	 * Database Handler of MyBB
 	 *
 	 * @var object
 	*/
-	var $db;
+	private $db;
 	
 	/**
 	 * MyBB Super Variable containing a whole lot of information
 	 *
 	 * @var object
 	*/
-	var $mybb;
+	private $mybb;
 	
 	/**
 	 * MyBB's Post Parser
 	 *
 	 * @var object
 	*/
-	var $parser;
+	private $parser;
+
+	/**
+	 * Constructor
+	 * If we include the global.php of MyBB in the constructor,
+	 * weird error messages popup
+	 * --> This sounds like a ToDo: Find out why?????? - My guess: Some evil eval() functions
+	 *
+	 * @param object $mybb Pass the Super MyBB Object as a reference so we can work with it
+	 * @param object $db Pass the MyBB Database Handler as a reference so we can work with is
+	*/
+	public function __construct(&$mybb, &$db, &$cache, &$plugins, &$lang, &$config)
+	{
+		$this->mybb =& $mybb;
+		$this->db =& $db;
+		$this->cache = $cache;
+		$this->plugins =& $plugins;
+		$this->lang =& $lang;
+		$this->config =& $config;
+		
+		define('MYBB_ADMIN_DIR', MYBB_ROOT.$this->config['admin_dir'].'/');
+		
+		// Some Constants for non-magic-numbers
+		define('NON_FATAL', false);
+		
+		require_once MYBB_ROOT.'inc/class_parser.php';
+		$this->parser = new postParser;
+	}
 	
 	/**
 	 * Shows a message for errors occuring in this class. 
@@ -71,7 +98,7 @@ class MyBBIntegrator
 	 *
 	 * @param string $message The error message
 	*/
-	function _errorAndDie($message)
+	private function _errorAndDie($message)
 	{
 		echo '<div style="width:92%; margin:4px auto; border:1px #DDD solid; background:#F1F1F1; padding:5px; color:#C00; font-weight:bold;">An error occured during script run.<br />'.$message.'</div>';
 		die;
@@ -85,7 +112,7 @@ class MyBBIntegrator
 	 * @param string $password Wow, what might this be??
 	 * @return boolean
 	*/
-	function checkForumPassword($forum_id, $password = '', $pid = 0)
+	public function checkForumPassword($forum_id, $password = '', $pid = 0)
 	{
 		global $forum_cache;
 		
@@ -165,9 +192,9 @@ class MyBBIntegrator
 	 * @param integer $forum_id This can be filled for a nice moderator log!
 	 * @return boolean
 	*/
-	function closeThread($thread_id, $forum_id = 0)
+	public function closeThread($thread_id, $forum_id = 0)
 	{
-		if (!is_moderator($fid, "canopenclosethreads"))
+		if (!is_moderator($forum_id, "canopenclosethreads"))
 		{
 			return false;
 		}
@@ -191,10 +218,10 @@ class MyBBIntegrator
 	 * @param array $data Array with keys according to database layout, which holds the data of the forum
 	 * @param array $permissions Array with Permission entries (structure: array( 'canview' => array( 'usergroupid' => 1 ) )) (an example)
 	 * @param array $default_permissions Array which defines, if default permissions shall be used (structure: array( usergroupid => 0 / 1 )
-	 * 								  	 Can be left empty, then this function will take care of it
+	 * 								  	 Can be left empty, then this public function will take care of it
 	 * @return $data with more values, like fid and parentlist
 	*/
-	function createCategory($data, $permissions = array(), $default_permissions = array())
+	public function createCategory($data, $permissions = array(), $default_permissions = array())
 	{		
 		require_once MYBB_ADMIN_DIR.'inc/functions.php';
 		
@@ -282,10 +309,10 @@ class MyBBIntegrator
 	 * @param array $data Array with keys according to database layout, which holds the data of the forum
 	 * @param array $permissions Array with Permission entries (structure: array( 'canview' => array( 'usergroupid' => 1 ) )) (an example)
 	 * @param array $default_permissions Array which defines, if default permissions shall be used (structure: array( usergroupid => 0 / 1 )
-	 * 								  	 Can be left empty, then this function will take care of it
+	 * 								  	 Can be left empty, then this public function will take care of it
 	 * @return $data with more values, like fid and parentlist
 	*/
-	function createForum($data, $permissions = array(), $default_permissions = array())
+	public function createForum($data, $permissions = array(), $default_permissions = array())
 	{		
 		require_once MYBB_ADMIN_DIR.'inc/functions.php';
 		
@@ -374,7 +401,7 @@ class MyBBIntegrator
 	 * @param integer $thread_id ID of Thread where the poll should be assigned to
 	 * @param array $data The Data
 	*/
-	function createPoll($thread_id, $data)
+	public function createPoll($thread_id, $data)
 	{
 		// Required keys in data array: options, question
 		if (!isset($data['options']) || !isset($data['question']))
@@ -523,7 +550,7 @@ class MyBBIntegrator
 	 * @param array $data Post Data
 	 * @return array|string When true it will return an array with postID and status of being visible - false = error array or inline string
 	*/
-	function createPost($data, $inline_errors = true)
+	public function createPost($data, $inline_errors = true)
 	{
 		require_once MYBB_ROOT.'inc/functions_post.php';
 		require_once MYBB_ROOT.'/inc/datahandlers/post.php';
@@ -552,7 +579,7 @@ class MyBBIntegrator
 	 * @return array|string 
 	 * @return array|string When true it will return an array with threadID, postID and status of being visible - false = error array or inline string 
 	*/
-	function createThread($data, $inline_errors = true)
+	public function createThread($data, $inline_errors = true)
 	{
 		require_once MYBB_ROOT.'inc/functions_post.php';
 		require_once MYBB_ROOT.'/inc/datahandlers/post.php';
@@ -574,7 +601,7 @@ class MyBBIntegrator
 	 * @param boolean $inline_errors Defines if we want a formatted error string or an array
 	 * @return array|string When true it will return an array with some user data - false = error array or inline string
 	*/
-	function createUser($data, $inline_errors = true)
+	public function createUser($data, $inline_errors = true)
 	{
 		require_once MYBB_ROOT.'inc/functions_user.php';
 		require_once MYBB_ROOT.'/inc/datahandlers/user.php';
@@ -601,7 +628,7 @@ class MyBBIntegrator
 	 * @param mixed $value Any value to use with the database
 	 * @return string
 	*/
-	function dbEscape($value)
+	public function dbEscape($value)
 	{
 		return $this->db->escape_string($value);
 	}
@@ -613,7 +640,7 @@ class MyBBIntegrator
 	 * @param integer $poll_id ID of Poll to be deleted
 	 * @return boolean|string
 	*/
-	function deletePoll($poll_id)
+	public function deletePoll($poll_id)
 	{
 		$this->lang->load('moderation');
 		
@@ -656,7 +683,7 @@ class MyBBIntegrator
 	 * @param integer $thread_id Thread-ID where the poll is located
 	 * @return boolean|string
 	*/
-	function deletePollOfThread($thread_id)
+	public function deletePollOfThread($thread_id)
 	{
 		$this->lang->load('polls');
 		$this->lang->load('moderation');
@@ -699,7 +726,7 @@ class MyBBIntegrator
 	 *
 	 * @param integer|array $pm_id ID(s) of Private Messages (many IDs require an array)
 	*/
-	function deletePrivateMessage($pm_id)
+	public function deletePrivateMessage($pm_id)
 	{
 		require_once MYBB_ROOT.'inc/functions_user.php';
 		
@@ -731,7 +758,7 @@ class MyBBIntegrator
 	 *
 	 * @param integer|array $pm_id ID(s) of User IDs (many IDs require an array)
 	*/
-	function deletePrivateMessagesOfUser($user_id)
+	public function deletePrivateMessagesOfUser($user_id)
 	{
 		require_once MYBB_ROOT.'inc/functions_user.php';
 		
@@ -761,7 +788,7 @@ class MyBBIntegrator
 	 *
 	 * @return array
 	*/
-	function generateCaptcha()
+	public function generateCaptcha()
 	{
 		$randomstr = random_str(5);
 		$imagehash = md5(random_str(12));
@@ -782,7 +809,7 @@ class MyBBIntegrator
 	 * @param integer $user_id User-ID
 	 * @return string MD5
 	*/
-	function generatePosthash($user_id = 0)
+	public function generatePosthash($user_id = 0)
 	{
 		mt_srand((double) microtime() * 1000000);
 		if ($user_id == 0)
@@ -803,7 +830,7 @@ class MyBBIntegrator
 	 * @param string $postamount_sort_order Sort order of the threads (ordered by the amount of posts)
 	 * @return array
 	*/
-	function getBusyThreadsWithinTimespan($timespan = 86400, $post_sort_order = 'DESC', $postamount_sort_order = 'DESC')
+	public function getBusyThreadsWithinTimespan($timespan = 86400, $post_sort_order = 'DESC', $postamount_sort_order = 'DESC')
 	{
 		$threads = array();
 		
@@ -866,7 +893,7 @@ class MyBBIntegrator
 			}
 		}
 		
-		// Sort function for ascending posts
+		// Sort public function for ascending posts
 		function arraySortByPostamountASC($item1, $item2)
 		{
 			if ($item1['postamount'] == $item2['postamount'])
@@ -884,7 +911,7 @@ class MyBBIntegrator
 			}
 		}
 		
-		// Sort function for descending posts
+		// Sort public function for descending posts
 		function arraySortByPostamountDESC($item1, $item2)
 		{
 			if ($item1['postamount'] == $item2['postamount'])
@@ -916,7 +943,7 @@ class MyBBIntegrator
 	 * @param integer $active_override If set to 1, will override the active forum status
 	 * @return array|boolean If unsuccessful, it returns false - Otherwise the Database row
 	*/
-	function getForum($forum_id, $active_override = 0)
+	public function getForum($forum_id, $active_override = 0)
 	{
 		$forum = get_forum($forum_id, $active_override);
 		
@@ -939,7 +966,7 @@ class MyBBIntegrator
 	 *
 	 * @return array
 	*/
-	function getForumStaff()
+	public function getForumStaff()
 	{
 		$this->lang->load('showteam');
 		
@@ -1041,7 +1068,7 @@ class MyBBIntegrator
 	 * @param boolean $excluse_invisible Shall we also get invisible threads?
 	 * @return array
 	*/
-	function getLatestActiveThreads($forum_id = 0, $limit = 7, $exclude_invisible = true)
+	public function getLatestActiveThreads($forum_id = 0, $limit = 7, $exclude_invisible = true)
 	{
 		if ($forum_id == 0)
 		{
@@ -1101,7 +1128,7 @@ class MyBBIntegrator
 	 * @param boolean $join_first_post Shall we get the first post of this thread as well?
 	 * @return array
 	*/
-	function getLatestThreads($forum_id = 0, $fields = '*', $limit = 7, $exclude_invisible = true, $join_forums = true, $join_first_post = true)
+	public function getLatestThreads($forum_id = 0, $fields = '*', $limit = 7, $exclude_invisible = true, $join_forums = true, $join_first_post = true)
 	{
 		if ($forum_id != 0)
 		{
@@ -1184,7 +1211,7 @@ class MyBBIntegrator
 	 * @param boolean Shall we also return invisible ones?
 	 * @return array
 	*/
-	function getLatestPosts($thread_id = 0, $fields = '*', $limit = 7, $exclude_invisible = true)
+	public function getLatestPosts($thread_id = 0, $fields = '*', $limit = 7, $exclude_invisible = true)
 	{		
 		// Posts will be stored in this array
 		$posts = array();
@@ -1249,7 +1276,7 @@ class MyBBIntegrator
 	 *					  - page: Which page of the list will we be retrieving
 	 * @return array
 	*/
-	function getMembers($data = array())
+	public function getMembers($data = array())
 	{
 		/**
 		 *  Make sure we have initial values in the data array	
@@ -1380,7 +1407,7 @@ class MyBBIntegrator
 	 * @param integer $poll_id ID of Poll to fetch infos from
 	 * @return array
 	*/
-	function getPoll($poll_id)
+	public function getPoll($poll_id)
 	{
 		if ($poll_id == 0)
 		{
@@ -1425,7 +1452,7 @@ class MyBBIntegrator
 	 												If they are being overridden, the array will contain the options
 	 * @return array|boolean: If unsuccessful, it returns false - Otherwise the Database row
 	*/
-	function getPost($post_id, $parsed = false, $override_forum_parse_options = array())
+	public function getPost($post_id, $parsed = false, $override_forum_parse_options = array())
 	{
 		if ($post_id == 0)
 		{
@@ -1478,7 +1505,7 @@ class MyBBIntegrator
 		}
 		else
 		{
-			// Self-defined options given in the function parameter
+			// Self-defined options given in the public function parameter
 			$parser_options = array(
 				'allow_html' => (isset($override_forum_parse_options['allow_html']) && $override_forum_parse_options['allow_html'] == 1) ? 1 : 0,
 				'allow_mycode' => (isset($override_forum_parse_options['allow_mycode']) && $override_forum_parse_options['allow_mycode'] == 1) ? 1 : 0,
@@ -1500,7 +1527,7 @@ class MyBBIntegrator
 	 * @param array $params Parameters for the query
 	 * @return array
 	*/
-	function getPosts($params = array('fields' => '*', 'order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => 0, 'where' => ''))
+	public function getPosts($params = array('fields' => '*', 'order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => 0, 'where' => ''))
 	{
 		// We will store the posts in here
 		$posts = array();
@@ -1560,7 +1587,7 @@ class MyBBIntegrator
 	 * @param array $options Options for the query [ array('limit_start', 'limit', 'orderby', 'order_dir') ]
 	 * @return array
 	*/
-	function getPostsOfThread($thread_id, $fields = '*', $options = array())
+	public function getPostsOfThread($thread_id, $fields = '*', $options = array())
 	{
 		// This is what we will be returning
 		$arr = array();
@@ -1595,7 +1622,7 @@ class MyBBIntegrator
 	 * @param boolean $translate_folders If the folders should be turned into readable format à la "inbox"
 	 * @return array
 	*/
-	function getPrivateMessagesOfUser($user_id, $params = array('orderby' => 'pm.dateline', 'sort' => 'DESC'), $translate_folders = true)
+	public function getPrivateMessagesOfUser($user_id, $params = array('orderby' => 'pm.dateline', 'sort' => 'DESC'), $translate_folders = true)
 	{		
 		/**
 		 * This is what we will be returning
@@ -1653,7 +1680,7 @@ class MyBBIntegrator
 	 * @param integer $thread_id ID of the thread to fetch data from
 	 * @return array|boolean If unsuccessful, it returns false - Otherwise the Database row
 	*/
-	function getThread($thread_id)
+	public function getThread($thread_id)
 	{
 		$thread = get_thread($thread_id);
 		
@@ -1677,13 +1704,13 @@ class MyBBIntegrator
 	 * @param string $fields If you want to fetch certain fields, define a string with them
 	 * @param string $where Additional WHERE constellation if needed
 	 * @pararm array $query_params Parameters for the Query to run in the database 
-	 							   (order_by, order_dir, limit_start, limit [limit will only be acknowledged if both limit vars are defined])
+	 *							   (order_by, order_dir, limit_start, limit [limit will only be acknowledged if both limit vars are defined])
 	 * @param boolean $excluse_invisible Shall we get invisible threads too?
 	 * @param boolean $join_forums Do we also want to get the forum information of where the threads are located?
 	 * @param boolean $join_first_post Shall we get the first post of the thread? (= initial post)
 	 * @return array
 	*/
-	function getThreads($forum_id, $fields = '*', $where = '', $query_params = array('order_by' => 't.`subject`', 'order_dir' => 'ASC'), $exclude_invisible = true, $join_forums = false, $join_first_post = false)
+	public function getThreads($forum_id, $fields = '*', $where = '', $query_params = array('order_by' => 't.`subject`', 'order_dir' => 'ASC'), $exclude_invisible = true, $join_forums = false, $join_first_post = false)
 	{
 		// Do we have permission?
 		if (!is_array($forum_id))
@@ -1768,7 +1795,7 @@ class MyBBIntegrator
 	 * @param integer $forum_id
 	 * @return array
 	*/
-	function getUnreadThreadsOfForum($forum_id)
+	public function getUnreadThreadsOfForum($forum_id)
 	{
 		$threads = $this->getThreads($forum_id);
 		$tids = array();
@@ -1799,7 +1826,7 @@ class MyBBIntegrator
 	 * @param integer $user_id ID of User to fetch data from (0 = own user)
 	 * @return array
 	*/
-	function getUser($user_id = 0)
+	public function getUser($user_id = 0)
 	{
 		// If given user id is 0, we use the own User ID
 		if ($user_id == 0)
@@ -1820,7 +1847,7 @@ class MyBBIntegrator
 	 * @param boolean $colored_usernames Define if we want to return formatted usernames (color)
 	 * @return array
 	*/
-	function getWhoIsOnline($colored_usernames = true)
+	public function getWhoIsOnline($colored_usernames = true)
 	{
 		// This is what we are going to return
 		$arr = array(
@@ -1917,10 +1944,10 @@ class MyBBIntegrator
 	 * @param integer $thread_id ID of Thread
 	 * @return array|false
 	*/
-	function getWhoPosted($thread_id, $sort_by_posts = true)
+	public function getWhoPosted($thread_id, $sort_by_posts = true)
 	{
-		$thread = $this->getThread($thread_id); // No need to check for permissions, the function already does it
-		$forum = $this->getForum($thread['fid']); // No need to check for permissions, the function already does it
+		$thread = $this->getThread($thread_id); // No need to check for permissions, the public function already does it
+		$forum = $this->getForum($thread['fid']); // No need to check for permissions, the public function already does it
 		if (!$this->checkForumPassword($forum['fid']))
 		{
 			return false;
@@ -1966,7 +1993,7 @@ class MyBBIntegrator
 	 * @param integer $poll_id ID of Poll
 	 * @return array
 	*/
-	function getWhoVoted($poll_id)
+	public function getWhoVoted($poll_id)
 	{
 		if ($poll_id == 0)
 		{
@@ -2004,7 +2031,7 @@ class MyBBIntegrator
 	 *
 	 * @param integer $thread_id ID of Thread
 	*/
-	function incViews($thread_id)
+	public function incViews($thread_id)
 	{
 		// All we do here is to run the increment query
 		$this->db->query('
@@ -2019,7 +2046,7 @@ class MyBBIntegrator
 	 *
 	 * @return boolean
 	*/
-	function isLoggedIn()
+	public function isLoggedIn()
 	{
 		// If the user is logged in, he has an UID
 		return ($this->mybb->user['uid'] != 0) ? true : false;
@@ -2027,14 +2054,14 @@ class MyBBIntegrator
 	
 	/**
 	 * Is the user a moderator?
-	 * This function checks if the user has certain rights to perform an action in a forum
+	 * This public function checks if the user has certain rights to perform an action in a forum
 	 * Refers to: inc/functions.php
 	 *
 	 * @param integer $forum_id ID of the forum to check permissions for
 	 * @param string $action Action which shall be checked for
 	 * @param integer $user_id ID of User
 	*/
-	function isModerator($forum_id = 0, $action = '', $user_id = 0)
+	public function isModerator($forum_id = 0, $action = '', $user_id = 0)
 	{
 		// If we aren't logged in, we cannot possibly a moderator
 		if ($this->isLoggedIn())
@@ -2053,7 +2080,7 @@ class MyBBIntegrator
 	 * @param integer $user_id User-ID
 	 * @return boolean
 	*/
-	function isSuperAdmin($user_id = 0)
+	public function isSuperAdmin($user_id = 0)
 	{
 		// If specified user_id is 0, we want to know if current user is Super Admin
 		return is_super_admin(($user_id == 0) ? $this->mybb->user['uid'] : $user_id);
@@ -2067,7 +2094,7 @@ class MyBBIntegrator
 	 * @param string $password Password of User
 	 * @return boolean
 	*/
-	function login($username, $password, $captcha_hash = '', $captcha_string = '')
+	public function login($username, $password, $captcha_hash = '', $captcha_string = '')
 	{
 		$this->lang->load('member');
 		
@@ -2089,7 +2116,7 @@ class MyBBIntegrator
 		*/
 		$logins = login_attempt_check(NON_FATAL);
 		
-		// We need a few functions from the user function collection for the login procedur
+		// We need a few functions from the user public function collection for the login procedur
 		require_once MYBB_ROOT.'inc/functions_user.php';
 		
 		// If the username does not exist, login fails
@@ -2106,7 +2133,7 @@ class MyBBIntegrator
 		$query = $this->db->simple_select("users", "loginattempts", "LOWER(username)='".$this->db->escape_string(my_strtolower($username))."'", array('limit' => 1));
 		$loginattempts = $this->db->fetch_field($query, "loginattempts");
 		
-		// Let's call the handy MyBB validation function and see if we find a user
+		// Let's call the handy MyBB validation public function and see if we find a user
 		$user = validate_password_from_username($username, $password);
 		if (!$user['uid'])
 		{
@@ -2185,7 +2212,7 @@ class MyBBIntegrator
 	 *
 	 * NEEDS MODULE AND ACTION AS PARAMS! DONT FORGET TO PUT THIS INTO DOCUMENTATION
 	 */
-	function logAdminAction()
+	public function logAdminAction()
 	{
 		$data = func_get_args();
 
@@ -2217,7 +2244,7 @@ class MyBBIntegrator
 	 * @param array $data Data array with information necessary to pass onto the log
 	 * @param string $action Name of the action
 	*/
-	function logModeratorAction($data, $action = '')
+	public function logModeratorAction($data, $action = '')
 	{
 		// If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it.
 		if($data['fid'] == '')
@@ -2263,7 +2290,7 @@ class MyBBIntegrator
 	 *
 	 * @return boolean
 	*/
-	function logout()
+	public function logout()
 	{
 		// If the user is not logged in at all, we make him believe that the logout procedure workedjust fine
 		if (!$this->isLoggedIn())
@@ -2311,7 +2338,7 @@ class MyBBIntegrator
 	 * @param string $redirect_url If there should be a redirection afterwards, define the URL here
 	 * @return boolean Only returns false if it fails, otherwise, if it does not redirect, it returns true
 	*/
-	function markRead($id = 0, $redirect_url = '')
+	public function markRead($id = 0, $redirect_url = '')
 	{
 		// "Mark-Read" functions are located in inc/functions_indicators.php
 		require_once MYBB_ROOT."/inc/functions_indicators.php";
@@ -2354,41 +2381,14 @@ class MyBBIntegrator
 	}
 	
 	/**
-	 * Constructor
-	 * If we include the global.php of MyBB in the constructor,
-	 * weird error messages popup
-	 * --> This sounds like a ToDo: Find out why?????? - My guess: Some evil eval() functions
-	 *
-	 * @param object $mybb Pass the Super MyBB Object as a reference so we can work with it
-	 * @param object $db Pass the MyBB Database Handler as a reference so we can work with is
-	*/
-	function MyBBIntegrator(&$mybb, &$db, &$cache, &$plugins, &$lang, &$config)
-	{
-		$this->mybb =& $mybb;
-		$this->db =& $db;
-		$this->cache = $cache;
-		$this->plugins =& $plugins;
-		$this->lang =& $lang;
-		$this->config =& $config;
-		
-		define('MYBB_ADMIN_DIR', MYBB_ROOT.$this->config['admin_dir'].'/');
-		
-		// Some Constants for non-magic-numbers
-		define('NON_FATAL', false);
-		
-		require_once MYBB_ROOT.'inc/class_parser.php';
-		$this->parser = new postParser;
-	}
-	
-	/**
-	 * This function creates a class object if it is necessary
+	 * This public function creates a class object if it is necessary
 	 * This is needed, if we want to use classes, which are not included in the init routine of mybb (example: Moderation)
 	 *
 	 * @param string $object Name of the class object
 	 * @param string $class_name Name of the Class
 	 * @param string $include_path The Path where we can find the class
 	*/
-	function MyBBIntegratorClassObject($object, $class_name, $include_path)
+	public function MyBBIntegratorClassObject($object, $class_name, $include_path)
 	{
 		if (isset($this->{$object}))
 		{
@@ -2410,7 +2410,7 @@ class MyBBIntegrator
 	 * @param integer $forum_id This can be filled for a nice moderator log!
 	 * @return boolean
 	*/
-	function openThread($thread_id, $forum_id = 0)
+	public function openThread($thread_id, $forum_id = 0)
 	{
 		if (!is_moderator($fid, "canopenclosethreads"))
 		{
@@ -2438,7 +2438,7 @@ class MyBBIntegrator
 	 * @param array $options Options the parser can accept: filter_badwords, allow_html, allow_mycode, me_username, allow_smilies, nl2br, 
 	 * @return string Parsed string
 	*/
-	function parseString($message, $options = array())
+	public function parseString($message, $options = array())
 	{
 		// Set base URL for parsing smilies
 		$base_url= $this->mybb->settings['bburl'];
@@ -2560,7 +2560,7 @@ class MyBBIntegrator
 	 * @return array|string If registration fails, we return an array containing the error message, 
 	 * 						If registration is successful, we return the string, which notifies the user of what will be the next action
 	*/
-	function register($info = array())
+	public function register($info = array())
 	{
 		// Load the language phrases we need for the registration
 		$this->lang->load('member');
@@ -2778,7 +2778,7 @@ class MyBBIntegrator
 	 * @param integer $forum_id ID of Forum/Category
 	 * @return boolean
 	*/
-	function removeForumOrCategory($forum_id)
+	public function removeForumOrCategory($forum_id)
 	{
 		$this->plugins->run_hooks("admin_forum_management_delete");
 		
@@ -2882,7 +2882,7 @@ class MyBBIntegrator
 	 * @param integer $post_id ID of Post
 	 * @return ?
 	*/
-	function removePost($post_id)
+	public function removePost($post_id)
 	{
 		require_once MYBB_ROOT."inc/functions_post.php";
 		require_once MYBB_ROOT."inc/functions_upload.php";
@@ -2952,7 +2952,7 @@ class MyBBIntegrator
 	 * @param integer $thread Thread ID
 	 * @return boolean
 	*/
-	function removeThread($thread)
+	public function removeThread($thread)
 	{
 		$tid = intval($thread);
 
@@ -2973,7 +2973,7 @@ class MyBBIntegrator
 	 * @param integer|string $user User ID or username
 	 * @return boolean
 	*/
-	function removeUser($user)
+	public function removeUser($user)
 	{
 		// If no ID is given, we check if there is a user with the specified username
 		if (!is_numeric($user))
@@ -3022,7 +3022,7 @@ class MyBBIntegrator
 	/**
 	 * Send a private message from someone to someone
 	*/
-	function sendPrivateMessage($data = array())
+	public function sendPrivateMessage($data = array())
 	{
 		// Let's do default values and check if all required data keys are passed
 		$default_data = array(
@@ -3111,14 +3111,14 @@ class MyBBIntegrator
 	}
 	
 	/**
-	 * Use built-in set-cookie function of MyBB
+	 * Use built-in set-cookie public function of MyBB
 	 *
 	 * @param string $name Cookie Name
 	 * @param mixed $value Cookie Value
 	 * @param integer $expires Timestamp of Expiry
 	 * @param boolean Use cookie for HTTP only?
 	*/
-	function setCookie($name, $value = '', $expires = NULL, $httponly = false)
+	public function setCookie($name, $value = '', $expires = NULL, $httponly = false)
 	{
 		my_setcookie($name, $value, $expires, $httponly);
 	}
@@ -3131,7 +3131,7 @@ class MyBBIntegrator
 	 * @param boolean Return errors as MyBB array or nicely formated?
 	 * @return boolean|array
 	*/
-	function updatePasswordOfUser($user_id, $password, $inline_error = true)
+	public function updatePasswordOfUser($user_id, $password, $inline_error = true)
 	{
 		include_once MYBB_ROOT.'inc/functions_user.php';
 		require_once MYBB_ROOT.'inc/datahandlers/user.php';
@@ -3161,7 +3161,7 @@ class MyBBIntegrator
 	 * @param array $data Post-Data
 	 * @param boolean|array|string $inline_errors Return arrays as array or string or return bool true when all good
 	*/
-	function updatePost($data, $inline_errors)
+	public function updatePost($data, $inline_errors)
 	{
 		require_once MYBB_ROOT.'inc/functions_post.php';
 		require_once MYBB_ROOT.'/inc/datahandlers/post.php';
@@ -3191,11 +3191,11 @@ class MyBBIntegrator
 	 * @return array|string 
 	 * @return array|string When true it will return an array with threadID, postID and status of being visible - false = error array or inline string 
 	*/
-	function updateThread($data, $inline_errors = true)
+	public function updateThread($data, $inline_errors = true)
 	{
 		if (!isset($data['tid']))
 		{
-			$this->_errorAndDie('Function <i>updateThread</i>: Must pass thread id in array parameter - Required array key is <i>tid</i>');
+			$this->_errorAndDie('public function <i>updateThread</i>: Must pass thread id in array parameter - Required array key is <i>tid</i>');
 		}
 		
 		// Posthandler is used for a post, so let's fetch the thread-post
@@ -3222,7 +3222,7 @@ class MyBBIntegrator
 	 * @param boolean Return errors as MyBB array or nicely formated?
 	 * @return boolean|array
 	*/
-	function updateUser($userdata = array(), $inline_error = true)
+	public function updateUser($userdata = array(), $inline_error = true)
 	{
 		// Userdata Array needs to contain the UserID
 		if (!isset($userdata['uid']))
@@ -3253,7 +3253,7 @@ class MyBBIntegrator
 	 * @param string $string the Letters of the captcha
 	 * @return boolean
 	*/
-	function validateCaptcha($hash, $string)
+	public function validateCaptcha($hash, $string)
 	{
 		$imagehash = $this->dbEscape($hash);
 		$imagestring = $this->dbEscape($string);
@@ -3277,7 +3277,7 @@ class MyBBIntegrator
 	 * @param integer $user_id ID of User
 	 * @param integer|array Vote option (basically what you vote!) - if multiple, you can define more options in an array
 	*/
-	function vote($poll_id, $user_id = 0, $option = NULL)
+	public function vote($poll_id, $user_id = 0, $option = NULL)
 	{
 		// Load the Language Phrases
 		$this->lang->load('polls');
