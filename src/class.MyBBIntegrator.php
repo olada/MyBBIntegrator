@@ -189,10 +189,10 @@ class MyBBIntegrator
 	 * More threads: $thread_id is array with ints
 	 *
 	 * @param integer|array $thread_id See above
-	 * @param integer $forum_id This can be filled for a nice moderator log!
+	 * @param integer $forum_id ID of forum where the thread is located
 	 * @return boolean
 	*/
-	public function closeThread($thread_id, $forum_id = 0)
+	public function closeThread($thread_id, $forum_id)
 	{
 		if (!is_moderator($forum_id, "canopenclosethreads"))
 		{
@@ -2407,12 +2407,12 @@ class MyBBIntegrator
 	 * More threads: $thread_id is array with ints
 	 *
 	 * @param integer|array $thread_id See above
-	 * @param integer $forum_id This can be filled for a nice moderator log!
+	 * @param integer $forum_id ID of forum where the thread is located
 	 * @return boolean
 	*/
-	public function openThread($thread_id, $forum_id = 0)
+	public function openThread($thread_id, $forum_id)
 	{
-		if (!is_moderator($fid, "canopenclosethreads"))
+		if (!is_moderator($forum_id, "canopenclosethreads"))
 		{
 			return false;
 		}
