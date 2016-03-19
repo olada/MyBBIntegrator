@@ -7,12 +7,12 @@ function __($msg, $withPre = false, $die = true) {
 	if ($withPre) echo "<pre>";
 	print_r($msg);
 	if ($withPre) echo "</pre>";
+	if ($die) die();
 }
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-//define('IN_MYBB', NULL);
-define('IN_MYBB', 1);
+define('IN_MYBB', NULL);
 define('THIS_SCRIPT', 'index.php');
 
 define('PHPDAVE_PATH_BOOTSTRAP', __DIR__);
@@ -42,6 +42,11 @@ global $admin_session, $announcements, $attachtypes, $archive_url,
 
 require_once PHPDAVE_PATH_ROOT . 'test\vendor\mybb1.8.5\global.php';
 require_once PHPDAVE_PATH_ROOT . 'src\class.MyBBIntegrator.php';
-$MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
-
 require_once PHPDAVE_PATH_ROOT . 'test\tests\MyBBIntegratorTestCase.php';
+
+$mybb_integrator = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
+
+require_once "MyBBIntegratorFactory.php";
+$mybb_integrator_factory = new MyBBIntegratorFactory($mybb_integrator);
+
+MyBBIntegratorTestCase::setFactory($mybb_integrator_factory);
