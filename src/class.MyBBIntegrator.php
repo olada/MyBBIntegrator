@@ -194,7 +194,7 @@ class MyBBIntegrator
 	*/
 	public function closeThread($thread_id, $forum_id, $user_id = 0)
 	{
-		if (!is_moderator($forum_id, "canopenclosethreads"), $user_id)
+		if (!is_moderator($forum_id, "canopenclosethreads", $user_id))
 		{
 			return false;
 		}
@@ -2378,7 +2378,7 @@ class MyBBIntegrator
 	*/
 	public function openThread($thread_id, $forum_id, $user_id = 0)
 	{
-		if (!is_moderator($forum_id, "canopenclosethreads"), $user_id)
+		if (!is_moderator($forum_id, "canopenclosethreads", $user_id))
 		{
 			return false;
 		}
