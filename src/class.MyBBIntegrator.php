@@ -65,6 +65,8 @@ class MyBBIntegrator
 	*/
 	private $parser;
 
+	const UPDATE_CACHE = true;
+
 	/**
 	 * Constructor
 	 * If we include the global.php of MyBB in the constructor,
@@ -1405,9 +1407,10 @@ class MyBBIntegrator
 	 * Read some info about a poll
 	 *
 	 * @param integer $poll_id ID of Poll to fetch infos from
+	 * @param boolean true if the thread cache should be updated (default false)
 	 * @return array
 	*/
-	public function getPoll($poll_id)
+	public function getPoll($poll_id, $update_thread_cache = false)
 	{
 		if ($poll_id == 0)
 		{
@@ -1434,7 +1437,7 @@ class MyBBIntegrator
 		 * YOu have to make sure that columns of "thread" won't override columns of "poll"
 		 * Therefore the solution right now at hand will be sufficient, until people start to moan :)
 		*/
-		$poll['thread'] = $this->getThread($poll['tid']);
+		$poll['thread'] = $this->getThread($poll['tid'], $update_thread_cache);
 		
 		$poll['whovoted'] = $this->getWhoVoted($poll_id);
 		
@@ -1449,7 +1452,7 @@ class MyBBIntegrator
 	 * @param boolean $parsed Shall the Post message be parsed?
 	 * @param array $parse_options Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username
 	 * @param array $override_forum_parse_options Whether parse options should be defined by forum or by the script.
-	 												If they are being overridden, the array will contain the options
+	 *												If they are being overridden, the array will contain the options
 	 * @return array|boolean: If unsuccessful, it returns false - Otherwise the Database row
 	*/
 	public function getPost($post_id, $parsed = false, $override_forum_parse_options = array())
