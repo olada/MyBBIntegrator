@@ -16,7 +16,7 @@ define('IN_MYBB', NULL);
 define('THIS_SCRIPT', 'index.php');
 
 define('PHPDAVE_PATH_BOOTSTRAP', __DIR__);
-define('PHPDAVE_PATH_ROOT', PHPDAVE_PATH_BOOTSTRAP . '/../../');
+define('PHPDAVE_PATH_ROOT', PHPDAVE_PATH_BOOTSTRAP . DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
 
 // Register all globals, so PHPUnit does not get rid of them
 // These are so many, we might as well just do one line per first character...
@@ -40,9 +40,9 @@ global $admin_session, $announcements, $attachtypes, $archive_url,
 	   $table, $task, $templatecache, $templatelist, $templates, $theme_cache, $thread, $time, $ttf_fonts, 
 	   $user_cache, $user_view_fields, $use_ttf;
 
-require_once PHPDAVE_PATH_ROOT . 'test\vendor\mybb1.8.5\global.php';
-require_once PHPDAVE_PATH_ROOT . 'src\class.MyBBIntegrator.php';
-require_once PHPDAVE_PATH_ROOT . 'test\tests\MyBBIntegratorTestCase.php';
+require_once PHPDAVE_PATH_ROOT . 'test'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'mybb1.8.5'.DIRECTORY_SEPARATOR.'global.php';
+require_once PHPDAVE_PATH_ROOT . 'src'.DIRECTORY_SEPARATOR.'class.MyBBIntegrator.php';
+require_once PHPDAVE_PATH_ROOT . 'test'.DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'MyBBIntegratorTestCase.php';
 
 $mybb_integrator = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
 
