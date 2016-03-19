@@ -1678,11 +1678,12 @@ class MyBBIntegrator
 	 * Refers to: inc/functions.php
 	 *
 	 * @param integer $thread_id ID of the thread to fetch data from
+	 * @param boolean true if cache should be reloaded
 	 * @return array|boolean If unsuccessful, it returns false - Otherwise the Database row
 	*/
-	public function getThread($thread_id)
+	public function getThread($thread_id, $update_cache = false)
 	{
-		$thread = get_thread($thread_id);
+		$thread = get_thread($thread_id, true);
 		
 		// Do we have permission?
 		$forumpermissions = forum_permissions($thread['fid']);
