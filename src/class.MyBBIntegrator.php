@@ -2094,115 +2094,81 @@ class MyBBIntegrator
 	 * @param string $password Password of User
 	 * @return boolean
 	*/
-	public function login($username, $password, $captcha_hash = '', $captcha_string = '')
+	
+	public function login($username, $password) 
 	{
-		$this->lang->load('member');
-		
+		$this->plugins->run_hooks("member_do_login_start");
+
 		/**
 		 * If we are already logged in, we do not have to perform the login procedure
-		 * However, we can make believe that the login did succeed
-		 * It certainly did a while ago ;)
 		*/
 		if ($this->isLoggedIn())
 		{
 			return true;
 		}
-		
-		// by default, login is good!
-		$bad_login = false;
-		
-		/**
-		 * Let's see how many logins we have already tried
-		*/
-		$logins = login_attempt_check(NON_FATAL);
-		
-		// We need a few functions from the user public function collection for the login procedur
-		require_once MYBB_ROOT.'inc/functions_user.php';
-		
-		// If the username does not exist, login fails
-		if (!username_exists($username))
+
+		// Is a fatal call if user has had too many tries
+		$errors = array();
+		$logins = login_attempt_check();
+
+		require_once MYBB_ROOT."inc/datahandlers/login.php";
+		$loginhandler = new LoginDataHandler("get");
+
+		$user = array(
+			'username' => $username,
+			'password' => $password,
+			'remember' => "yes", // For some reason, MyBB is refering to this by string and not a boolean...
+			'imagestring' => $captcha_string
+		);
+
+		$options = array(
+			'fields' => 'loginattempts',
+			'username_method' => (int)$this->mybb->settings['username_method'],
+		);
+
+		$user_loginattempts = get_user_by_username($user['username'], $options);
+		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
+
+		$loginhandler->set_data($user);
+		$validated = $loginhandler->validate_login();
+
+		if(!$validated)
 		{
+			$this->mybb->input['action'] = "login";
+			$this->mybb->request_method = "get";
+
 			my_setcookie('loginattempts', $logins + 1);
-			return false;
-		}
-		
-		/**
-		 * Let's get a database version of the login attempts
-		 * Previous login attempt call relied on cookies
-		*/
-		$query = $this->db->simple_select("users", "loginattempts", "LOWER(username)='".$this->db->escape_string(my_strtolower($username))."'", array('limit' => 1));
-		$loginattempts = $this->db->fetch_field($query, "loginattempts");
-		
-		// Let's call the handy MyBB validation public function and see if we find a user
-		$user = validate_password_from_username($username, $password);
-		if (!$user['uid'])
-		{
-			my_setcookie('loginattempts', $logins + 1);
-			$this->db->write_query("UPDATE ".TABLE_PREFIX."users SET `loginattempts` = `loginattempts` + 1 WHERE LOWER(`username`) = '".$this->db->escape_string(my_strtolower($username))."'");
-			$bad_login = true;
-		}
-		
-		/**
-		 * Possible ToDo:
-		 * If we have had more than 3 login attemps a captcha is shown in MyBB
-		 * Maybe provide the same functionality in MyBBIntegrator ?
-		*/
-		if ($loginattempts > 3 || intval($mybb->cookies['loginattempts']) > 3)
-		{
-			// Captcha input is given, let's validate the captcha and see if we can login
-			if (!empty($captcha_hash) && !empty($captcha_string))
+			$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
+
+			$errors = $loginhandler->get_friendly_errors();
+
+			$user['loginattempts'] = (int)$loginhandler->login_data['loginattempts'];
+
+			// If we need a captcha set it here
+			if($this->mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $this->mybb->settings['failedcaptchalogincount'] || (int)$this->mybb->cookies['loginattempts'] > $this->mybb->settings['failedcaptchalogincount']))
 			{
-				if (!$this->validateCaptcha($captcha_hash, $captcha_string) || $bad_login === true)
-				{echo 'HELLO';
-					return $this->generateCaptcha();
-				}
-			}
-			else
-			{
-				// Show captcha image for guests if enabled
-				if ($this->mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$this->mybb->user['uid'])
-				{
-					return $this->generateCaptcha();
-				}
+				$do_captcha = true;
+				$correct = $loginhandler->captcha_verified;
 			}
 		}
-		else
+		else if($validated && $loginhandler->captcha_verified == true)
 		{
-			if ($bad_login === true)
+			// Successful login
+			if($loginhandler->login_data['coppauser'])
 			{
+				//error($this->lang->error_awaitingcoppa);
 				return false;
 			}
+			
+			$loginhandler->complete_login();
+
+			$this->plugins->run_hooks("member_do_login_end");
+
+			// Saving login data in user, so isLoggedIn works without having to reload the page
+			$this->mybb->user = $loginhandler->login_data;
 		}
-		
-		// COPPA users always fail :D
-		if ($user['coppauser'])
-		{
-			return false;
-		}
-		
-		// Reset both login attempts counter (cookie + database)
-		my_setcookie('loginattempts', 1);
-		$this->db->update_query("users", array("loginattempts" => 1), "uid='{$user['uid']}'");
-		
-		// Delete old session entry
-		$this->db->delete_query("sessions", "ip='".$this->db->escape_string($this->mybb->session->ipaddress)."' AND sid != '".$this->mybb->session->sid."'");
-		
-		// Create a new session and save it in the database
-		$newsession = array(
-			"uid" => $user['uid'],
-		);
-		$this->db->update_query("sessions", $newsession, "sid='".$this->mybb->session->sid."'");
-		
-		// Temporarily set the cookie remember option for the login cookies
-		$this->mybb->user['remember'] = $user['remember'];
-		
-		// Set essential login cookies
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
-		my_setcookie("sid", $this->mybb->session->sid, -1, true);
-		
-		// If there are hooks defined for the end of the login procedure, call them
+
 		$this->plugins->run_hooks("member_do_login_end");
-		
 		return true;
 	}
 	
@@ -3001,7 +2967,7 @@ class MyBBIntegrator
 		$this->db->delete_query("userfields", "ufid='{$user_id}'");
 		$this->db->delete_query("privatemessages", "uid='{$user_id}'");
 		$this->db->delete_query("events", "uid='{$user_id}'");
-		$this->db->delete_query("moderators", "uid='{$user_id}'");
+		$this->db->delete_query("moderators", "id='{$user_id}'");
 		$this->db->delete_query("forumsubscriptions", "uid='{$user_id}'");
 		$this->db->delete_query("threadsubscriptions", "uid='{$user_id}'");
 		$this->db->delete_query("sessions", "uid='{$user_id}'");
