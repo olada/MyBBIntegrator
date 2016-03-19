@@ -2376,9 +2376,9 @@ class MyBBIntegrator
 	 * @param integer $forum_id ID of forum where the thread is located
 	 * @return boolean
 	*/
-	public function openThread($thread_id, $forum_id)
+	public function openThread($thread_id, $forum_id, $user_id = 0)
 	{
-		if (!is_moderator($forum_id, "canopenclosethreads"))
+		if (!is_moderator($forum_id, "canopenclosethreads"), $user_id)
 		{
 			return false;
 		}
