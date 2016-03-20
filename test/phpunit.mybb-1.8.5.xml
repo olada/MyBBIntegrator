@@ -43,9 +43,9 @@
 	<logging>
 	  <log type="junit" target="log/logfile.xml" logIncompleteSkipped="false"/>
 	  <log type="testdox-text" target="log/testdox.txt"/>
-     <log type="coverage-html" target="log/coverage" lowUpperBound="35"
+     <log type="coverage-html" target="coverage" lowUpperBound="35"
        highLowerBound="70"/>
-     <log type="coverage-clover" target="log/coverage.xml"/>
-     <log type="coverage-php" target="log/coverage.serialized"/>
+     <log type="coverage-clover" target="coverage.xml"/>
+     <log type="coverage-php" target="coverage.serialized"/>
 	</logging>
 </phpunit>
