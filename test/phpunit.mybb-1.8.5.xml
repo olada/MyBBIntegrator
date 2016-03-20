@@ -34,10 +34,11 @@
 	</testsuites>
 
 	<logging>
-	  <log type="json" target="log/logfile.json"/>
-	  <log type="tap" target="log/logfile.tap"/>
 	  <log type="junit" target="log/logfile.xml" logIncompleteSkipped="false"/>
-	  <log type="testdox-html" target="log/testdox.html"/>
 	  <log type="testdox-text" target="log/testdox.txt"/>
+     <log type="coverage-html" target="log/coverage" lowUpperBound="35"
+       highLowerBound="70"/>
+     <log type="coverage-clover" target="log/coverage.xml"/>
+     <log type="coverage-php" target="log/coverage.serialized"/>
 	</logging>
 </phpunit>
