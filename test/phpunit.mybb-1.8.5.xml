@@ -33,6 +33,13 @@
 	  </testsuite>
 	</testsuites>
 
+   <filter>
+     <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
+       <directory suffix=".php">../src</directory>
+       <file>class.MyBBIntegrator.php</file>
+     </whitelist>
+   </filter>
+
 	<logging>
 	  <log type="junit" target="log/logfile.xml" logIncompleteSkipped="false"/>
 	  <log type="testdox-text" target="log/testdox.txt"/>
