@@ -33,8 +33,4 @@ class UserTest extends MyBBIntegratorTestCase {
 			"should be logged in after logging in as normal user"
 		);
 	}
-
-	public function testThisShouldFail() {
-		$this->assertFalse(true, "should fail");
-	}
 }
