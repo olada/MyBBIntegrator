@@ -35,7 +35,7 @@
 
    <filter>
      <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
-       <directory suffix=".php">../src</directory>
+       <directory>../src</directory>
        <file>class.MyBBIntegrator.php</file>
      </whitelist>
    </filter>
