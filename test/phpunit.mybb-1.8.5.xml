@@ -35,8 +35,10 @@
 
    <filter>
      <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
-       <directory>src</directory>
-       <file>class.MyBBIntegrator.php</file>
+       <directory suffix=".php">../src</directory>
+       <exclude>
+          <directory suffix=".php">vendor</directory>
+        </exclude>
      </whitelist>
    </filter>
 
