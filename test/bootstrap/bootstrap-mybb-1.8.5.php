@@ -15,20 +15,19 @@ error_reporting(E_ALL);
 define('IN_MYBB', NULL);
 define('THIS_SCRIPT', 'index.php');
 
+define('PHPDAVE_PATH_BOOTSTRAP', __DIR__);
+define('PHPDAVE_PATH_ROOT', PHPDAVE_PATH_BOOTSTRAP . DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
+
 // Let's provision our test database with the initial values we need
 try {
 	$pdo = new PDO(TEST_DB_PDO_CONNECTION_STRING, TEST_DB_USER, TEST_DB_PASS);
-	$test_db_dump = file_get_contents('mybb-1.8.5-data-dump.sql');
+	$test_db_dump = file_get_contents(PHPDAVE_PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'mybb-1.8.5-data-dump.sql');
 	$affected_count = $pdo->exec($test_db_dump);
 	echo "Database provisioned - " . $affected_count . " affected datasets";
 }
 catch (PDOException $pdoException) {
 	__("Could not create database connection for test db provisioning. Is there a database accessible through '" . TEST_DB_PDO_CONNECTION_STRING . "'?");
 }
-
-
-define('PHPDAVE_PATH_BOOTSTRAP', __DIR__);
-define('PHPDAVE_PATH_ROOT', PHPDAVE_PATH_BOOTSTRAP . DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
 
 // Register all globals, so PHPUnit does not get rid of them
 // These are so many, we might as well just do one line per first character...
