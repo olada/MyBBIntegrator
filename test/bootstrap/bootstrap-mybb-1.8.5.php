@@ -22,8 +22,10 @@ define('PHPDAVE_PATH_ROOT', PHPDAVE_PATH_BOOTSTRAP . DIRECTORY_SEPARATOR.'..'.DI
 try {
 	$pdo = new PDO(TEST_DB_PDO_CONNECTION_STRING, TEST_DB_USER, TEST_DB_PASS);
 	$test_db_dump = file_get_contents(PHPDAVE_PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'mybb-1.8.5-data-dump.sql');
+	$time1 = microtime();
 	$affected_count = $pdo->exec($test_db_dump);
-	echo "Database provisioned - " . $affected_count . " affected datasets\n";
+	$time_passed = microtime() - $time1;
+	echo "Database provisioned - Database provisioning took " . $time_passed . " microseconds\n";
 }
 catch (PDOException $pdoException) {
 	__("Could not create database connection for test db provisioning. Is there a database accessible through '" . TEST_DB_PDO_CONNECTION_STRING . "'?");
