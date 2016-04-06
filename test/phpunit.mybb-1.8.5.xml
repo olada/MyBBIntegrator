@@ -47,4 +47,10 @@
     <log type="coverage-html" target="log/coverage" />
     <log type="coverage-clover" target="log/coverage.xml"/>
 	</logging>
+
+  <php>
+    <const name="TEST_DB_PDO_CONNECTION_STRING" value="mysql:host=localhost;dbname=mybb-test-1.8.5" />
+    <const name="TEST_DB_USER" value="mybb-test" />
+    <const name="TEST_DB_PASS" value="mybb-test-123" />
+  </php>
 </phpunit>
