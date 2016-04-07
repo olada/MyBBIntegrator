@@ -38,11 +38,61 @@ class UserTest extends MyBBIntegratorTestCase {
 	 * Check if logout works after we tested login
 	 * @depends testLoginAndLoggedInState
 	*/
-	public function testLogout() {
+	public function testLogoutWithoutSessionIDOrLogoutKeyShouldFail() {
 		$this->assertTrue(
 			$this->mybb_integrator->isLoggedIn(),
 			"should be logged in before testing logout"
 		);
+
+		$status = $this->mybb_integrator->logout();
+
+		$this->assertFalse(
+			$status,
+			"Logout status should be false when logging out without session id or logoutkey"
+		);
+
+		$this->assertTrue(
+			$this->mybb_integrator->isLoggedIn(),
+			"should be logged in because logout fails"
+		);
+	}
+
+	/**
+	 * @depends testLogoutWithoutSessionIDOrLogoutKeyShouldFail
+	*/
+	public function testLogoutWithSessionID() {
+		$this->assertTrue(
+			$this->mybb_integrator->isLoggedIn(),
+			"should be logged in before testing logout"
+		);
+
+		$this->mybb_integrator->addInput('sid', $this->mybb_integrator->getIntegratorVar('mybb')->session->sid);
+
+		$status = $this->mybb_integrator->logout();
+
+		$this->assertTrue(
+			$status,
+			"Logout status should be true after successfully logging out"
+		);
+
+		$this->assertFalse(
+			$this->mybb_integrator->isLoggedIn(),
+			"should be logged out after logging out"
+		);
+	}
+
+	/**
+	 * @depends testLogoutWithSessionID
+	*/
+	public function testLogoutWithLoginKey() {
+		$this->mybb_integrator->login(self::NORMAL_USER_NAME, self::NORMAL_USER_PASSWORD);
+		
+		$this->assertTrue(
+			$this->mybb_integrator->isLoggedIn(),
+			"should be logged in before testing logout"
+		);
+
+		$this->mybb_integrator->input['logoutkey'] = $this->mybb_integrator->mybb->user['logoutkey'];
 
 		$status = $this->mybb_integrator->logout();
 

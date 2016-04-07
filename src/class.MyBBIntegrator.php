@@ -93,6 +93,16 @@ class MyBBIntegrator
 		require_once MYBB_ROOT.'inc/class_parser.php';
 		$this->parser = new postParser;
 	}
+
+	/**
+	 * Allows getting a private variable of the integrator class
+	 *
+	 * @param string name of private instance var
+	 * @return any
+	*/
+	public function getIntegratorVar($varname) {
+		return $this->{$varname};
+	}
 	
 	/**
 	 * Shows a message for errors occuring in this class. 
@@ -104,6 +114,11 @@ class MyBBIntegrator
 	{
 		echo '<div style="width:92%; margin:4px auto; border:1px #DDD solid; background:#F1F1F1; padding:5px; color:#C00; font-weight:bold;">An error occured during script run.<br />'.$message.'</div>';
 		die;
+	}
+
+	public function addInput($var, $value) {
+		$this->mybb->input[$var] = $value; 
+		 __($this->mybb->input, 0, 0);
 	}
 	
 	/**
@@ -2169,7 +2184,12 @@ class MyBBIntegrator
 			$this->plugins->run_hooks("member_do_login_end");
 
 			// Saving login data in user, so isLoggedIn works without having to reload the page
-			$this->mybb->user = $loginhandler->login_data;
+			//$this->mybb->user = $loginhandler->login_data;
+			$this->mybb->user = get_user($loginhandler->login_data['uid']);
+
+			// Required to be able to logout immediately after logging in
+			// This line is located in class_session.php of mybb
+			$this->mybb->user['logoutkey'] = md5($this->mybb->user['loginkey']);
 		}
 
 		$this->plugins->run_hooks("member_do_login_end");
@@ -2262,42 +2282,37 @@ class MyBBIntegrator
 	*/
 	public function logout()
 	{
-		// If the user is not logged in at all, we make him believe that the logout procedure workedjust fine
-		if (!$this->isLoggedIn())
+		$this->plugins->run_hooks("member_logout_start");
+
+		if(!$this->mybb->user['uid'])
 		{
 			return true;
 		}
 
 		// Check session ID if we have one
-		if($this->mybb->input['sid'] && $this->mybb->input['sid'] != $this->mybb->session->sid)
+		if(isset($this->mybb->input['sid']) && $this->mybb->get_input('sid') != $this->mybb->session->sid)
 		{
 			return false;
 		}
 		// Otherwise, check logoutkey
-		else if (!$this->mybb->input['sid'] && $this->mybb->input['logoutkey'] != $this->mybb->user['logoutkey'])
+		else if(!isset($this->mybb->input['sid']) && $this->mybb->get_input('logoutkey') != $this->mybb->user['logoutkey'])
 		{
 			return false;
 		}
-		
-		// Clear essential login cookies
+
 		my_unsetcookie("mybbuser");
 		my_unsetcookie("sid");
-		
-		// The logged in user data will be updated
+
 		if($this->mybb->user['uid'])
 		{
 			$time = TIME_NOW;
-			$lastvisit = array(
-				"lastactive" => $time-900,
-				"lastvisit" => $time,
-			);
-			$this->db->update_query("users", $lastvisit, "uid='".$this->mybb->user['uid']."'");
-			$this->db->delete_query("sessions", "sid='".$this->mybb->session->sid."'");
+			// Run this after the shutdown query from session system
+			$this->db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$time}', lastactive='{$time}' WHERE uid='{$this->mybb->user['uid']}'");
+			$this->db->delete_query("sessions", "sid = '{$this->mybb->session->sid}'");
 		}
-		
-		// If there are any hooks to run, we call them here
+
 		$this->plugins->run_hooks("member_logout_end");
-		
+
 		return true;
 	}
 	
