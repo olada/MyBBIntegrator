@@ -33,4 +33,27 @@ class UserTest extends MyBBIntegratorTestCase {
 			"should be logged in after logging in as normal user"
 		);
 	}
+
+	/**
+	 * Check if logout works after we tested login
+	 * @depends testLoginAndLoggedInState
+	*/
+	public function testLogout() {
+		$this->assertTrue(
+			$this->mybb_integrator->isLoggedIn(),
+			"should be logged in before testing logout"
+		);
+
+		$status = $this->mybb_integrator->logout();
+
+		$this->assertTrue(
+			$status,
+			"Logout status should be true after successfully logging out"
+		);
+
+		$this->assertFalse(
+			$this->mybb_integrator->isLoggedIn(),
+			"should be logged out after logging out"
+		);
+	}
 }
