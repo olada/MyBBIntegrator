@@ -8,6 +8,6 @@ class MiscTest extends MyBBIntegratorTestCase {
 		
 		$this->assertEquals(32, strlen($posthash));
 		$this->assertEquals(32, strlen($posthash2));
-		$this->assertEquals($posthash, $posthash2);
+		$this->assertNotEquals($posthash, $posthash2);
 	}
 }
