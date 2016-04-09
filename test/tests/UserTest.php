@@ -4,6 +4,7 @@ class UserTest extends MyBBIntegratorTestCase {
 	
 	const NORMAL_USER_NAME = "normal";
 	const NORMAL_USER_PASSWORD = "normal123";
+	const WRONG_SESSION_ID = "aabb";
 
 	/**
 	 * Get list of members
@@ -57,12 +58,26 @@ class UserTest extends MyBBIntegratorTestCase {
 		);
 	}
 
-	public function testLogoutWithSessionID() {
+	public function testLogoutWithWrongAndCorrectSessionID() {
 		$this->mybb_integrator->login(self::NORMAL_USER_NAME, self::NORMAL_USER_PASSWORD);
 
 		$this->assertTrue(
 			$this->mybb_integrator->isLoggedIn(),
 			"should be logged in before testing logout"
+		);
+
+		$this->mybb_integrator->getIntegratorVar('mybb')->input['sid'] = self::WRONG_SESSION_ID;
+
+		$status = $this->mybb_integrator->logout();
+
+		$this->assertFalse(
+			$status,
+			"Logout status should be false after logging out with wrong session id"
+		);
+
+		$this->assertTrue(
+			$this->mybb_integrator->isLoggedIn(),
+			"should still be logged in because previous logout attempt must have failed"
 		);
 
 		$this->mybb_integrator->getIntegratorVar('mybb')->input['sid'] = $this->mybb_integrator->getIntegratorVar('mybb')->session->sid;
