@@ -234,85 +234,134 @@ class MyBBIntegrator
 	 * @return $data with more values, like fid and parentlist
 	*/
 	public function createCategory($data, $permissions = array(), $default_permissions = array())
-	{		
+	{
 		require_once MYBB_ADMIN_DIR.'inc/functions.php';
-		
-		if (!isset($data['name']))
+
+		if(!trim($data['name']))
 		{
-			$this->_errorAndDie('A new forum needs to have a name and a type');
+			$errors[] = $lang->error_missing_title;
 		}
-		
-		$data['type'] = 'c';
-		
-		// Let's leave the parentlist creation to the script and let's not trust the dev :)
-		if ($data['parentlist'] != '')
+
+		$pid = (int) $data['pid'];
+		$type = 'c';
+
+		if(!$errors)
 		{
-			$data['parentlist'] = '';
-		}
-		
-		// If there is no defined Parent ID, parent ID will be set to 0
-		if (!isset($data['pid']) || $data['pid'] < 0)
-		{
-			$data['pid'] = 0;
-		}
-		else
-		{
-			$data['pid'] = intval($data['pid']);
-		}
-		
-		if (!empty($permissions))
-		{		
-			if (
-				(!isset($permissions['canview']) || empty($permissions['canview'])) ||
-				(!isset($permissions['canpostthreads']) || empty($permissions['canpostthreads'])) ||
-				(!isset($permissions['canpostreplys']) || empty($permissions['canpostreplys'])) ||
-				(!isset($permissions['canpostpolls']) || empty($permissions['canpostpolls'])) ||
-				(!isset($permissions['canpostattachments']) || empty($permissions['canpostattachments']))
-			   )
+			if($pid < 0)
 			{
-				$this->_errorAndDie('The $permissions Parameter does not have the correct format. It requires following keys: <i>canview, canpostthreads, canpostreplys, canpostpolls and canpostattachments</i>');
+				$pid = 0;
 			}
-			
-			/**
-			 * If no default permissions are given, we will initiate them, default: yes
-			 * Since there is the possibility of additional usergroups, we will get the usergroups from the permissions array!
-			 * The structure of the inherit array is: keys = groupid
-			 * If the value of an inherit array item is 1, this means that the default_permissions shall be used
-			*/
-			if (empty($default_permissions))
+
+			$defaults = array(
+				'description' => '',
+				'linkto' => '',
+				'disporder' => '',
+				'active' => 1,
+				'open' => 1,
+				'allowhtml' => 0,
+				'allowmycode' => 1,
+				'allowsmilies' => 1,
+				'allowimgcode' => 1,
+				'allowvideocode' => 1,
+				'allowpicons' => 1,
+				'allowtratings' => 1,
+				'usepostcounts' => 1,
+				'usethreadcounts' => 1,
+				'requireprefix' => 0,
+				'password' => '',
+				'showinjump' => 1,
+				'style' => 0,
+				'overridestyle' => 0,
+				'rulestype' => 0,
+				'rulestitle' => '',
+				'rules' => '',
+				'defaultdatecut' => 0,
+				'defaultsortby' => '',
+				'defaultsortorder' => ''
+			);
+
+			$data = array_merge($defaults, $data);
+
+			$insert_array = array(
+				"name" => $this->db->escape_string($data['name']),
+				"description" => $this->db->escape_string($data['description']),
+				"linkto" => $this->db->escape_string($data['linkto']),
+				"type" => $this->db->escape_string($type),
+				"pid" => $pid,
+				"parentlist" => '',
+				"disporder" => (int) $data['disporder'],
+				"active" => (int) $data['active'],
+				"open" => (int) $data['open'],
+				"allowhtml" => (int) $data['allowhtml'],
+				"allowmycode" => (int) $data['allowmycode'],
+				"allowsmilies" => (int) $data['allowsmilies'],
+				"allowimgcode" => (int) $data['allowimgcode'],
+				"allowvideocode" => (int) $data['allowvideocode'],
+				"allowpicons" => (int) $data['allowpicons'],
+				"allowtratings" => (int) $data['allowtratings'],
+				"usepostcounts" => (int) $data['usepostcounts'],
+				"usethreadcounts" => (int) $data['usethreadcounts'],
+				"requireprefix" => (int) $data['requireprefix'],
+				"password" => $this->db->escape_string($data['password']),
+				"showinjump" => (int) $data['showinjump'],
+				"style" => (int) $data['style'],
+				"overridestyle" => (int) $data['overridestyle'],
+				"rulestype" => (int) $data['rulestype'],
+				"rulestitle" => $this->db->escape_string($data['rulestitle']),
+				"rules" => $this->db->escape_string($data['rules']),
+				"defaultdatecut" => (int) $data['defaultdatecut'],
+				"defaultsortby" => $this->db->escape_string($data['defaultsortby']),
+				"defaultsortorder" => $this->db->escape_string($data['defaultsortorder']),
+			);
+
+			$fid = $this->db->insert_query("forums", $insert_array);
+
+			$parentlist = make_parent_list($fid);
+			$this->db->update_query("forums", array("parentlist" => $parentlist), "fid='$fid'");
+
+			$insert_array['fid'] = $fid;
+			$insert_array['parentlist'] = $parentlist;
+
+			$inherit = $data['default_permissions'];
+
+			foreach($data as $id => $permission)
 			{
-				foreach ($permissions['canview'] as $gid)
+				if(strpos($id, 'fields_') === false)
 				{
-					$default_permissions[$gid] = 1;
+					continue;
+				}
+
+				list(, $gid) = explode('fields_', $id);
+
+				foreach(array('canview','canpostthreads','canpostreplys','canpostpolls') as $name)
+				{
+					if(in_array($name, $permission)  || $permission[$name])
+					{
+						$permissions[$name][$gid] = 1;
+					}
+					else
+					{
+						$permissions[$name][$gid] = 0;
+					}
 				}
 			}
-		}
-		
-		$data['fid'] = $this->db->insert_query("forums", $data);
-		
-		$data['parentlist'] = make_parent_list($data['fid']);
-		$this->db->update_query("forums", array("parentlist" => $data['parentlist']), 'fid=\''.$data['fid'].'\'');
-		
-		$this->cache->update_forums();
-		
-		if (!empty($permissions))
-		{
-			$inherit = $default_permissions;
-			
-			/**
-			 * $permissions['canview'][1] = 1 OR $permissions['canview'][1] = 0
-			 * --> $permissions[$name][$gid] = yes / no
-			*/
-				
+
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
 			$canpostpolls = $permissions['canpostpolls'];
 			$canpostattachments = $permissions['canpostattachments'];
 			$canpostreplies = $permissions['canpostreplys'];
-			save_quick_perms($data['fid']);
+			save_quick_perms($fid);
+
+			$this->plugins->run_hooks("admin_forum_management_add_commit");
+
+			$this->cache->update_forums();
+
+			// Log admin action
+			log_admin_action($fid, $insert_array['name']);
+
+			return $insert_array;
 		}
-		
-		return $data;
 	}
 	
 	/**
@@ -2163,7 +2212,7 @@ class MyBBIntegrator
 		}
 		else if($validated && $loginhandler->captcha_verified == true)
 		{
-			// Successful login
+			// Successful login but requires captcha
 			if($loginhandler->login_data['coppauser'])
 			{
 				//error($this->lang->error_awaitingcoppa);
