@@ -115,11 +115,6 @@ class MyBBIntegrator
 		echo '<div style="width:92%; margin:4px auto; border:1px #DDD solid; background:#F1F1F1; padding:5px; color:#C00; font-weight:bold;">An error occured during script run.<br />'.$message.'</div>';
 		die;
 	}
-
-	public function addInput($var, $value) {
-		$this->mybb->input[$var] = $value; 
-		 __($this->mybb->input, 0, 0);
-	}
 	
 	/**
 	 * Let's see if the correct password is given for a forum!
@@ -2309,6 +2304,9 @@ class MyBBIntegrator
 			// Run this after the shutdown query from session system
 			$this->db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$time}', lastactive='{$time}' WHERE uid='{$this->mybb->user['uid']}'");
 			$this->db->delete_query("sessions", "sid = '{$this->mybb->session->sid}'");
+
+			// Setting user to a default array, so isLoggedIn works without having to reload the page
+			$this->mybb->user = array('uid' => 0, 'username' => 0);
 		}
 
 		$this->plugins->run_hooks("member_logout_end");

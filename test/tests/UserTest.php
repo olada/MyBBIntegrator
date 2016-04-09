@@ -66,8 +66,23 @@ class UserTest extends MyBBIntegratorTestCase {
 			"should be logged in before testing logout"
 		);
 
-		$this->mybb_integrator->addInput('sid', $this->mybb_integrator->getIntegratorVar('mybb')->session->sid);
+		$this->mybb_integrator->getIntegratorVar('mybb')->input['sid'] = $this->mybb_integrator->getIntegratorVar('mybb')->session->sid;
 
+		/*__($this->mybb_integrator->getIntegratorVar('mybb')->input, 0, 0);
+		__($this->mybb_integrator->getIntegratorVar('mybb')->get_input('sid'));*/
+/*
+		$sid = $this->mybb_integrator->getIntegratorVar('mybb')->session->sid;
+		$_GET['sid'] = $sid;
+		echo "\n" . $sid;
+		echo "\n";
+		__($this->mybb_integrator->getIntegratorVar('mybb')->input, 0, 0);
+		self::$factory->runInitialization();
+		__($this->mybb_integrator->getIntegratorVar('mybb')->input, 0, 0);
+		echo "\n";
+		echo $sid;
+		echo "\n";
+		__($this->mybb_integrator->getIntegratorVar('mybb')->input);
+*/
 		$status = $this->mybb_integrator->logout();
 
 		$this->assertTrue(
@@ -92,7 +107,7 @@ class UserTest extends MyBBIntegratorTestCase {
 			"should be logged in before testing logout"
 		);
 
-		$this->mybb_integrator->input['logoutkey'] = $this->mybb_integrator->mybb->user['logoutkey'];
+		$this->mybb_integrator->getIntegratorVar('mybb')->input['logoutkey'] = $this->mybb_integrator->getIntegratorVar('mybb')->user['logoutkey'];
 
 		$status = $this->mybb_integrator->logout();
 

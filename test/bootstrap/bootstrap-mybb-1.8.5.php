@@ -36,11 +36,11 @@ catch (PDOException $pdoException) {
 // This is the place where you add globals in case single tests fail
 global $admin_session, $announcements, $attachtypes, $archive_url, 
 	   $base_url, 
-	   $cache, $cached_forum_permissions_permissions, $cached_forum_permissions, $canview, $canpostthreads, $canpostreplies, 
+	   $cache, $cached_forum_permissions_permissions, $cached_forum_permissions, $canview, $canpostthreads, $canpostreplies,
 	   	$canpostpolls, $canpostattachments, $change_dir, $config, $cp_style, 
 	   $db, $debug, $displaygroupfields, $done_shutdown,
 	   $error_handler, 
-	   $fpermcache, $fpermfields, $fselectcache, $footer, $form, $forum_cache, $forumarraycache, $forumpermissions, 
+	   $fpermcache, $fpermfields, $fselectcache, $footer, $form, $forum_cache, $forumarraycache, $forumpermissions,
 	   $globaltime, $groupscache, $grouppermignore, $groupzerogreater, 
 	   $header, $headerinclude, $htmldoctype,
 	   $icon, $img_width, $img_height, $inherit, 
