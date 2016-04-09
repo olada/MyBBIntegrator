@@ -224,7 +224,7 @@ class MyBBIntegrator
 		return true;
 	}
 
-	private function createCategoryOrForum($data, $permissions = arraya(), $default_permissions = array())
+	private function createCategoryOrForum($data, $permissions = array(), $default_permissions = array())
 	{
 		require_once MYBB_ADMIN_DIR.'inc/functions.php';
 
