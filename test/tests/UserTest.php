@@ -34,11 +34,21 @@ class UserTest extends MyBBIntegratorTestCase {
 		);
 	}
 
+	public function testLogoutWhenNotLoggedInShouldFail() {
+		$status = $this->mybb_integrator->logout();
+		$this->assertFalse(
+			$status,
+			"logout should fail because of not being logged in"
+		);
+	}
+
 	/**
 	 * Check if logout works after we tested login
 	 * @depends testLoginAndLoggedInState
 	*/
 	public function testLogoutWithoutSessionIDOrLogoutKeyShouldFail() {
+		$this->mybb_integrator->login(self::NORMAL_USER_NAME, self::NORMAL_USER_PASSWORD);
+
 		$this->assertTrue(
 			$this->mybb_integrator->isLoggedIn(),
 			"should be logged in before testing logout"
@@ -57,10 +67,9 @@ class UserTest extends MyBBIntegratorTestCase {
 		);
 	}
 
-	/**
-	 * @depends testLogoutWithoutSessionIDOrLogoutKeyShouldFail
-	*/
 	public function testLogoutWithSessionID() {
+		$this->mybb_integrator->login(self::NORMAL_USER_NAME, self::NORMAL_USER_PASSWORD);
+
 		$this->assertTrue(
 			$this->mybb_integrator->isLoggedIn(),
 			"should be logged in before testing logout"
@@ -68,21 +77,6 @@ class UserTest extends MyBBIntegratorTestCase {
 
 		$this->mybb_integrator->getIntegratorVar('mybb')->input['sid'] = $this->mybb_integrator->getIntegratorVar('mybb')->session->sid;
 
-		/*__($this->mybb_integrator->getIntegratorVar('mybb')->input, 0, 0);
-		__($this->mybb_integrator->getIntegratorVar('mybb')->get_input('sid'));*/
-/*
-		$sid = $this->mybb_integrator->getIntegratorVar('mybb')->session->sid;
-		$_GET['sid'] = $sid;
-		echo "\n" . $sid;
-		echo "\n";
-		__($this->mybb_integrator->getIntegratorVar('mybb')->input, 0, 0);
-		self::$factory->runInitialization();
-		__($this->mybb_integrator->getIntegratorVar('mybb')->input, 0, 0);
-		echo "\n";
-		echo $sid;
-		echo "\n";
-		__($this->mybb_integrator->getIntegratorVar('mybb')->input);
-*/
 		$status = $this->mybb_integrator->logout();
 
 		$this->assertTrue(
@@ -96,9 +90,6 @@ class UserTest extends MyBBIntegratorTestCase {
 		);
 	}
 
-	/**
-	 * @depends testLogoutWithSessionID
-	*/
 	public function testLogoutWithLoginKey() {
 		$this->mybb_integrator->login(self::NORMAL_USER_NAME, self::NORMAL_USER_PASSWORD);
 		
