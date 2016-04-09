@@ -64,4 +64,17 @@ class ForumTest extends MyBBIntegratorTestCase {
 			$return_data['parentlist']
 		);
 	}
+
+	public function testCreateCategoryWithNegativePid() {
+		$category_data = array(
+			'name' => self::NEW_CATEGORY_NAME,
+			'pid' => -4
+		);
+		$return_data = $this->mybb_integrator->createCategory($category_data);
+
+		$this->assertEquals(
+			0,
+			$return_data['pid']
+		);
+	}
 }
