@@ -34,21 +34,11 @@ class UserTest extends MyBBIntegratorTestCase {
 		);
 	}
 
-	public function testLogoutWhenNotLoggedInShouldFail() {
-		$status = $this->mybb_integrator->logout();
-		$this->assertFalse(
-			$status,
-			"logout should fail because of not being logged in"
-		);
-	}
-
 	/**
 	 * Check if logout works after we tested login
 	 * @depends testLoginAndLoggedInState
 	*/
 	public function testLogoutWithoutSessionIDOrLogoutKeyShouldFail() {
-		$this->mybb_integrator->login(self::NORMAL_USER_NAME, self::NORMAL_USER_PASSWORD);
-
 		$this->assertTrue(
 			$this->mybb_integrator->isLoggedIn(),
 			"should be logged in before testing logout"
@@ -110,6 +100,25 @@ class UserTest extends MyBBIntegratorTestCase {
 		$this->assertFalse(
 			$this->mybb_integrator->isLoggedIn(),
 			"should be logged out after logging out"
+		);
+	}
+
+	public function testLogoutWhenNotLoggedInShouldFail() {
+		$this->assertFalse(
+			$this->mybb_integrator->isLoggedIn(),
+			"should not be logged in before testing logout"
+		);
+
+		$status = $this->mybb_integrator->logout();
+		
+		$this->assertTrue(
+			$status,
+			"logout should fail because of not being logged in"
+		);
+
+		$this->assertFalse(
+			$this->mybb_integrator->isLoggedIn(),
+			"should still be logged out - as before"
 		);
 	}
 }
