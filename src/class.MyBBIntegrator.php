@@ -223,17 +223,8 @@ class MyBBIntegrator
 		
 		return true;
 	}
-	
-	/**
-	 * Insert a new Category into Database
-	 *
-	 * @param array $data Array with keys according to database layout, which holds the data of the forum
-	 * @param array $permissions Array with Permission entries (structure: array( 'canview' => array( 'usergroupid' => 1 ) )) (an example)
-	 * @param array $default_permissions Array which defines, if default permissions shall be used (structure: array( usergroupid => 0 / 1 )
-	 * 								  	 Can be left empty, then this public function will take care of it
-	 * @return $data with more values, like fid and parentlist
-	*/
-	public function createCategory($data, $permissions = array(), $default_permissions = array())
+
+	private function createCategoryOrForum($data, $permissions = arraya(), $default_permissions = array())
 	{
 		require_once MYBB_ADMIN_DIR.'inc/functions.php';
 
@@ -243,7 +234,7 @@ class MyBBIntegrator
 		}
 
 		$pid = (int) $data['pid'];
-		$type = 'c';
+		$type = ($data['type'] == 'c') ? 'c' : 'f';
 
 		if(!$errors)
 		{
@@ -365,6 +356,21 @@ class MyBBIntegrator
 	}
 	
 	/**
+	 * Insert a new Category into Database
+	 *
+	 * @param array $data Array with keys according to database layout, which holds the data of the forum
+	 * @param array $permissions Array with Permission entries (structure: array( 'canview' => array( 'usergroupid' => 1 ) )) (an example)
+	 * @param array $default_permissions Array which defines, if default permissions shall be used (structure: array( usergroupid => 0 / 1 )
+	 * 								  	 Can be left empty, then this public function will take care of it
+	 * @return $data with more values, like fid and parentlist
+	*/
+	public function createCategory($data, $permissions = array(), $default_permissions = array())
+	{
+		$data['type'] = 'c';
+		return $this->createCategoryOrForum($data, $permissions, $default_permissions);	
+	}
+	
+	/**
 	 * Insert a new Forum into Database
 	 *
 	 * @param array $data Array with keys according to database layout, which holds the data of the forum
@@ -375,84 +381,8 @@ class MyBBIntegrator
 	*/
 	public function createForum($data, $permissions = array(), $default_permissions = array())
 	{		
-		require_once MYBB_ADMIN_DIR.'inc/functions.php';
-		
-		if (!isset($data['name']))
-		{
-			$this->_errorAndDie('A new forum needs to have a name and a type');
-		}
-		
 		$data['type'] = 'f';
-		
-		// Let's leave the parentlist creation to the script and let's not trust the dev :)
-		if ($data['parentlist'] != '')
-		{
-			$data['parentlist'] = '';
-		}
-		
-		// If there is no defined Parent ID, parent ID will be set to 0
-		if (!isset($data['pid']) || $data['pid'] < 0)
-		{
-			$data['pid'] = 0;
-		}
-		else
-		{
-			$data['pid'] = intval($data['pid']);
-		}
-		
-		if (!empty($permissions))
-		{		
-			if (
-				(!isset($permissions['canview']) || empty($permissions['canview'])) ||
-				(!isset($permissions['canpostthreads']) || empty($permissions['canpostthreads'])) ||
-				(!isset($permissions['canpostreplys']) || empty($permissions['canpostreplys'])) ||
-				(!isset($permissions['canpostpolls']) || empty($permissions['canpostpolls'])) ||
-				(!isset($permissions['canpostattachments']) || empty($permissions['canpostattachments']))
-			   )
-			{
-				$this->_errorAndDie('The $permissions Parameter does not have the correct format. It requires following keys: <i>canview, canpostthreads, canpostreplys, canpostpolls and canpostattachments</i>');
-			}
-			
-			/**
-			 * If no default permissions are given, we will initiate them, default: yes
-			 * Since there is the possibility of additional usergroups, we will get the usergroups from the permissions array!
-			 * The structure of the inherit array is: keys = groupid
-			 * If the value of an inherit array item is 1, this means that the default_permissions shall be used
-			*/
-			if (empty($default_permissions))
-			{
-				foreach ($permissions['canview'] as $gid)
-				{
-					$default_permissions[$gid] = 1;
-				}
-			}
-		}
-		
-		$data['fid'] = $this->db->insert_query("forums", $data);
-		
-		$data['parentlist'] = make_parent_list($data['fid']);
-		$this->db->update_query("forums", array("parentlist" => $data['parentlist']), 'fid=\''.$data['fid'].'\'');
-		
-		$this->cache->update_forums();
-		
-		if (!empty($permissions))
-		{
-			$inherit = $default_permissions;
-			
-			/**
-			 * $permissions['canview'][1] = 1 OR $permissions['canview'][1] = 0
-			 * --> $permissions[$name][$gid] = yes / no
-			*/
-				
-			$canview = $permissions['canview'];
-			$canpostthreads = $permissions['canpostthreads'];
-			$canpostpolls = $permissions['canpostpolls'];
-			$canpostattachments = $permissions['canpostattachments'];
-			$canpostreplies = $permissions['canpostreplys'];
-			save_quick_perms($data['fid']);
-		}
-		
-		return $data;
+		return $this->createCategoryOrForum($data, $permissions, $default_permissions);	
 	}
 	
 	/**
