@@ -69,7 +69,7 @@ class ForumTest extends MyBBIntegratorTestCase {
 			self::CATEGORY_SYMBOL,
 			$return_data['type'],
 			"type should be \"c\" for [c]ategory"
-		)
+		);
 	}
 
 	public function testCreateCategoryWithNegativePid() {
