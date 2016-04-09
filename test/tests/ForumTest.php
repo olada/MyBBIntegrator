@@ -61,8 +61,15 @@ class ForumTest extends MyBBIntegratorTestCase {
 
 		$this->assertEquals(
 			self::NEW_CATEGORY_ID,
-			$return_data['parentlist']
+			$return_data['parentlist'],
+			"parentlist should be the category id itself because it is a top level category"
 		);
+
+		$this->assertEquals(
+			self::CATEGORY_SYMBOL,
+			$return_data['type'],
+			"type should be \"c\" for [c]ategory"
+		)
 	}
 
 	public function testCreateCategoryWithNegativePid() {
