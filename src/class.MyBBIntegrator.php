@@ -2152,18 +2152,14 @@ class MyBBIntegrator
 			$this->mybb->request_method = "get";
 
 			my_setcookie('loginattempts', $logins + 1);
-			$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
+			$this->db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
 
 			$errors = $loginhandler->get_friendly_errors();
 
 			$user['loginattempts'] = (int)$loginhandler->login_data['loginattempts'];
 
-			// If we need a captcha set it here
-			if($this->mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $this->mybb->settings['failedcaptchalogincount'] || (int)$this->mybb->cookies['loginattempts'] > $this->mybb->settings['failedcaptchalogincount']))
-			{
-				$do_captcha = true;
-				$correct = $loginhandler->captcha_verified;
-			}
+			// TODO: Force Captchas
+			return false;
 		}
 		else if($validated && $loginhandler->captcha_verified == true)
 		{

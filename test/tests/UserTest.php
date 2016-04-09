@@ -6,6 +6,9 @@ class UserTest extends MyBBIntegratorTestCase {
 	const NORMAL_USER_PASSWORD = "normal123";
 	const WRONG_SESSION_ID = "aabb";
 
+	const WRONG_USER_NAME = "wrong_user";
+	const WRONG_USER_PASSWORD = "wrong_password";
+
 	/**
 	 * Get list of members
 	 * Count should be exactly one - which is the admin user.
@@ -115,6 +118,28 @@ class UserTest extends MyBBIntegratorTestCase {
 		$this->assertFalse(
 			$this->mybb_integrator->isLoggedIn(),
 			"should be logged out after logging out"
+		);
+	}
+
+	/**
+	 * @depends testLogoutWithLoginKey
+	*/
+	public function testLoginWithWrongCredentials() {
+		$this->assertFalse(
+			$this->mybb_integrator->isLoggedIn(),
+			"should be logged out before testing login"
+		);
+
+		$status = $this->mybb_integrator->login(self::WRONG_USER_NAME, self::WRONG_USER_PASSWORD);
+
+		$this->assertFalse(
+			$status,
+			"Login Routine should have failed due to wrong validation"
+		);
+
+		$this->assertFalse(
+			$this->mybb_integrator->isLoggedIn(),
+			"should still be logged out after wrong login"
 		);
 	}
 
