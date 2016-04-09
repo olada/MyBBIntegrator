@@ -8,6 +8,8 @@ class ForumTest extends MyBBIntegratorTestCase {
 	const WRONG_PASSWORD = "wrong_password";
 	const CORRECT_PASSWORD = "passworded";
 
+	const CATEGORY_SYMBOL = 'c';
+
 	const NEW_CATEGORY_NAME = "TestCreateCategory-Name";
 	const NEW_CATEGORY_DESCRIPTION = "TestCreateCategory-Description";
 	const NEW_CATEGORY_ID = 5;
