@@ -625,7 +625,7 @@ class MyBBIntegrator
 	*/
 	public function dbEscape($value)
 	{
-		return $this->dbEscape($value);
+		return $this->db->escape_string($value);
 	}
 	
 	/**
