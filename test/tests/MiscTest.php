@@ -24,4 +24,14 @@ class MiscTest extends MyBBIntegratorTestCase {
 		$this->assertEquals(self::MD5_LENGTH, strlen($posthash2));
 		$this->assertNotEquals($posthash, $posthash2);
 	}
+
+	public function testParseString() {
+		$message = "Hello Test";
+		$expected_message = "Hello Test";
+		$parsed_message = $this->mybb_integrator->parseString($message);
+		$this->assertEquals(
+			$message,
+			$expected_message
+		);
+	}
 }
