@@ -2430,7 +2430,7 @@ class MyBBIntegrator
 			$message = $this->parser->parse_html($message);
 		}
 		else
-		{		
+		{
 			while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
 			{
 				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);

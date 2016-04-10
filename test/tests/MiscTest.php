@@ -25,12 +25,25 @@ class MiscTest extends MyBBIntegratorTestCase {
 		$this->assertNotEquals($posthash, $posthash2);
 	}
 
-	public function testParseString() {
+	public function testParseString_SimpleMessage() {
 		$message = "Hello Test";
 		$expected_message = "Hello Test";
+		
 		$parsed_message = $this->mybb_integrator->parseString($message);
+		
 		$this->assertEquals(
-			$message,
+			$parsed_message,
+			$expected_message
+		);
+	}
+
+	public function testParseString_HTMLMessage() {
+		$message = "<h1>Hello <b>Test</b></h1><script type=\"text/javascript\"></script>";
+		$expected_message = "<h1>Hello <b>Test</b></h1>&lt;script type=\"text/javascript\"&gt;&lt;/script&gt;";
+		$parsed_message = $this->mybb_integrator->parseString($message, array('allow_html' => 1));
+		
+		$this->assertEquals(
+			$parsed_message,
 			$expected_message
 		);
 	}
