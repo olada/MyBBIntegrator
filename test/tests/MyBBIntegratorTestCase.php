@@ -16,4 +16,9 @@ class MyBBIntegratorTestCase extends \PHPUnit_Framework_TestCase {
 	public static function setFactory($mybb_integrator_factory) {
 		self::$factory = $mybb_integrator_factory;
 	}
+
+	protected function logout() {
+		$this->mybb_integrator->getIntegratorVar('mybb')->input['logoutkey'] = $this->mybb_integrator->getIntegratorVar('mybb')->user['logoutkey'];
+		$this->mybb_integrator->logout();
+	}
 }

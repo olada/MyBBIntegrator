@@ -121,7 +121,7 @@ class MyBBIntegrator
 	 * Possible Todo: Pass passowrds in an array for defining passwords for parent categories (so far this only works when parent foums have same pass)
 	 *
 	 * @param integer $forum_id ID of Forum
-	 * @param string $password Wow, what might this be??
+	 * @param string $password Password attempt
 	 * @return boolean
 	*/
 	public function checkForumPassword($forum_id, $password = '', $pid = 0)
@@ -224,6 +224,10 @@ class MyBBIntegrator
 		return true;
 	}
 
+	/**
+	 * Generic creation of a forum.
+	 * In MyBB a category is a special forum. Categories and forums only differ in the type: c for category and f for forum
+	*/
 	private function createCategoryOrForum($data, $permissions = array(), $default_permissions = array())
 	{
 		require_once MYBB_ADMIN_DIR.'inc/functions.php';
@@ -645,7 +649,7 @@ class MyBBIntegrator
 		}
 		
 		$thread = $this->getThread($poll['tid']);
-		
+
 		if(!is_moderator($thread['fid'], "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != 1 || $this->mybb->user['uid'] != $thread['uid'])
@@ -1403,7 +1407,7 @@ class MyBBIntegrator
 	{
 		if ($poll_id == 0)
 		{
-			$this->_errorAndDie('Specified poll ID cannot be 0!');
+			return false;
 		}
 		
 		$query = $this->db->query('
@@ -1412,9 +1416,14 @@ class MyBBIntegrator
 			WHERE `pid` = '.(int) $poll_id.'
 			LIMIT 1
 		');
-		
+
+		if ($query->num_rows == 0)
+		{
+			return false;
+		}
+
 		$poll = $this->db->fetch_array($query);
-		
+
 		$separator = '||~|~||';
 		
 		$poll['optionsarray'] = explode($separator, $poll['options']);
@@ -2153,13 +2162,15 @@ class MyBBIntegrator
 
 			$this->plugins->run_hooks("member_do_login_end");
 
+			$this->mybb->session->init();
+
 			// Saving login data in user, so isLoggedIn works without having to reload the page
 			//$this->mybb->user = $loginhandler->login_data;
-			$this->mybb->user = get_user($loginhandler->login_data['uid']);
+			//$this->mybb->user = get_user($loginhandler->login_data['uid']);
 
 			// Required to be able to logout immediately after logging in
 			// This line is located in class_session.php of mybb
-			$this->mybb->user['logoutkey'] = md5($this->mybb->user['loginkey']);
+			//$this->mybb->user['logoutkey'] = md5($this->mybb->user['loginkey']);
 		}
 
 		$this->plugins->run_hooks("member_do_login_end");
