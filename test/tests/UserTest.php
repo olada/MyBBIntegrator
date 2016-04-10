@@ -9,6 +9,9 @@ class UserTest extends MyBBIntegratorTestCase {
 	const WRONG_USER_NAME = "wrong_user";
 	const WRONG_USER_PASSWORD = "wrong_password";
 
+	const ADMIN_USER_ID = 1;
+	const NORMAL_USER_ID = 2;
+
 	/**
 	 * Get list of members
 	 * Count should be exactly one - which is the admin user.
@@ -159,6 +162,18 @@ class UserTest extends MyBBIntegratorTestCase {
 		$this->assertFalse(
 			$this->mybb_integrator->isLoggedIn(),
 			"should still be logged out - as before"
+		);
+	}
+
+	public function testIsSuperAdmin() {
+		$this->assertTrue(
+			$this->mybb_integrator->isSuperAdmin(self::ADMIN_USER_ID),
+			"admin user should be super admin"
+		);
+
+		$this->assertFalse(
+			$this->mybb_integrator->isSuperAdmin(self::NORMAL_USER_ID),
+			"normal user should not be super admin"
 		);
 	}
 }
