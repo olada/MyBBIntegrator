@@ -27,6 +27,15 @@ class PollTest extends MyBBIntegratorTestCase {
 		);
 	}
 
+	public function testGetPollWithZeroID() {
+		$poll = $this->mybb_integrator->getPoll(self::NO_POLL_ID);
+
+		$this->assertFalse(
+			is_array($poll),
+			"poll should be false because poll_id is 0"
+		);
+	}
+
 	/**
 	 * Make sure that the poll exists at the beginning
 	*/
