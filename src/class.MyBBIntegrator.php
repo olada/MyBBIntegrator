@@ -278,10 +278,10 @@ class MyBBIntegrator
 			$data = array_merge($defaults, $data);
 
 			$insert_array = array(
-				"name" => $this->db->escape_string($data['name']),
-				"description" => $this->db->escape_string($data['description']),
-				"linkto" => $this->db->escape_string($data['linkto']),
-				"type" => $this->db->escape_string($type),
+				"name" => $this->dbEscape($data['name']),
+				"description" => $this->dbEscape($data['description']),
+				"linkto" => $this->dbEscape($data['linkto']),
+				"type" => $this->dbEscape($type),
 				"pid" => $pid,
 				"parentlist" => '',
 				"disporder" => (int) $data['disporder'],
@@ -297,16 +297,16 @@ class MyBBIntegrator
 				"usepostcounts" => (int) $data['usepostcounts'],
 				"usethreadcounts" => (int) $data['usethreadcounts'],
 				"requireprefix" => (int) $data['requireprefix'],
-				"password" => $this->db->escape_string($data['password']),
+				"password" => $this->dbEscape($data['password']),
 				"showinjump" => (int) $data['showinjump'],
 				"style" => (int) $data['style'],
 				"overridestyle" => (int) $data['overridestyle'],
 				"rulestype" => (int) $data['rulestype'],
-				"rulestitle" => $this->db->escape_string($data['rulestitle']),
-				"rules" => $this->db->escape_string($data['rules']),
+				"rulestitle" => $this->dbEscape($data['rulestitle']),
+				"rules" => $this->dbEscape($data['rules']),
 				"defaultdatecut" => (int) $data['defaultdatecut'],
-				"defaultsortby" => $this->db->escape_string($data['defaultsortby']),
-				"defaultsortorder" => $this->db->escape_string($data['defaultsortorder']),
+				"defaultsortby" => $this->dbEscape($data['defaultsortby']),
+				"defaultsortorder" => $this->dbEscape($data['defaultsortorder']),
 			);
 
 			$fid = $this->db->insert_query("forums", $insert_array);
@@ -516,10 +516,10 @@ class MyBBIntegrator
 		
 		$newpoll = array(
 			"tid" => $thread['tid'],
-			"question" => $this->db->escape_string($data['question']),
+			"question" => $this->dbEscape($data['question']),
 			"dateline" => TIME_NOW,
-			"options" => $this->db->escape_string($optionslist),
-			"votes" => $this->db->escape_string($voteslist),
+			"options" => $this->dbEscape($optionslist),
+			"votes" => $this->dbEscape($voteslist),
 			"numoptions" => intval($optioncount),
 			"numvotes" => 0,
 			"timeout" => $timeout,
@@ -625,7 +625,7 @@ class MyBBIntegrator
 	*/
 	public function dbEscape($value)
 	{
-		return $this->db->escape_string($value);
+		return $this->dbEscape($value);
 	}
 	
 	/**
@@ -1309,7 +1309,7 @@ class MyBBIntegrator
 			// letter is not 0, so it will be fetching names according to first char
 			else
 			{
-				$sql_where .= " AND u.`username` LIKE '".$this->db->escape_string($data['letter'])."%'";
+				$sql_where .= " AND u.`username` LIKE '".$this->dbEscape($data['letter'])."%'";
 			}
 		}
 		
@@ -2199,11 +2199,11 @@ class MyBBIntegrator
 	
 		$log_entry = array(
 			"uid" => $this->mybb->user['uid'],
-			"ipaddress" => $this->db->escape_string(get_ip()),
+			"ipaddress" => $this->dbEscape(get_ip()),
 			"dateline" => TIME_NOW,
-			"module" => $this->db->escape_string($this->mybb->input['module']),
-			"action" => $this->db->escape_string($this->mybb->input['action']),
-			"data" => $this->db->escape_string(@serialize($data))
+			"module" => $this->dbEscape($this->mybb->input['module']),
+			"action" => $this->dbEscape($this->mybb->input['action']),
+			"data" => $this->dbEscape(@serialize($data))
 		);
 	
 		$this->db->insert_query("adminlog", $log_entry);
@@ -2249,9 +2249,9 @@ class MyBBIntegrator
 			"dateline" => TIME_NOW,
 			"fid" => $fid,
 			"tid" => $tid,
-			"action" => $this->db->escape_string($action),
-			"data" => $this->db->escape_string($data),
-			"ipaddress" => $this->db->escape_string($this->session->ipaddress)
+			"action" => $this->dbEscape($action),
+			"data" => $this->dbEscape($data),
+			"ipaddress" => $this->dbEscape($this->session->ipaddress)
 		);
 		$this->db->insert_query("moderatorlog", $sql_array);
 	}
@@ -3021,7 +3021,7 @@ class MyBBIntegrator
 			SELECT pm.pmid
 			FROM ".TABLE_PREFIX."privatemessages pm
 			LEFT JOIN ".TABLE_PREFIX."users u ON(u.uid=pm.toid)
-			WHERE u.username='".$this->db->escape_string($data['to_uername'])."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{".$data['fromid']."}' AND pm.subject='".$this->db->escape_string($data['subject'])."' AND pm.message='".$this->db->escape_string($data['message'])."' AND pm.folder!='3'
+			WHERE u.username='".$this->dbEscape($data['to_uername'])."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{".$data['fromid']."}' AND pm.subject='".$this->dbEscape($data['subject'])."' AND pm.message='".$this->dbEscape($data['message'])."' AND pm.folder!='3'
 		");
 		$duplicate_check = $this->db->fetch_field($query, "pmid");
 		if ($duplicate_check)
@@ -3327,7 +3327,7 @@ class MyBBIntegrator
 					{
 						$votesql .= ",";
 					}
-					$votesql .= "('".$poll['pid']."','".$user_id."','".$this->db->escape_string($voteoption)."', ".TIME_NOW.")";
+					$votesql .= "('".$poll['pid']."','".$user_id."','".$this->dbEscape($voteoption)."', ".TIME_NOW.")";
 					$votesarray[$voteoption-1]++;
 					$numvotes = $numvotes+1;
 				}
@@ -3339,7 +3339,7 @@ class MyBBIntegrator
 			{
 				return $this->lang->error_nopolloptions;
 			}
-			$votesql = "('".$poll['pid']."','".$user_id."','".$this->db->escape_string($option)."', ".TIME_NOW.")";
+			$votesql = "('".$poll['pid']."','".$user_id."','".$this->dbEscape($option)."', ".TIME_NOW.")";
 			$votesarray[$option-1]++;
 			$numvotes = $numvotes+1;
 		}
@@ -3360,7 +3360,7 @@ class MyBBIntegrator
 			$voteslist .= $votesarray[$i-1];
 		}
 		$updatedpoll = array(
-			"votes" => $this->db->escape_string($voteslist),
+			"votes" => $this->dbEscape($voteslist),
 			"numvotes" => intval($numvotes),
 		);
 	
