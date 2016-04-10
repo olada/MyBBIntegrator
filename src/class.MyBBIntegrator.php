@@ -2064,13 +2064,7 @@ class MyBBIntegrator
 	 * @param integer $user_id ID of User
 	*/
 	public function isModerator($forum_id = 0, $action = '', $user_id = 0)
-	{
-		// If we aren't logged in, we cannot possibly a moderator
-		if ($this->isLoggedIn())
-		{
-			return false;
-		}
-		
+	{		
 		// If given user_id is 0 we tak the user_id of the current user --> Check if own user is mod
 		return is_moderator($forum_id, $action, ($user_id == 0) ? $this->mybb->user['uid'] : $user_id);
 	}
