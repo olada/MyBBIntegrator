@@ -221,7 +221,5 @@ class UserTest extends MyBBIntegratorTestCase {
 			is_array($register_status),
 			"when registration fails, an array containing error messages should be returned"
 		);
-
-		__($register_status,0,0);
 	}
 }

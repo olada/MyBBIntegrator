@@ -10,9 +10,12 @@ class ForumTest extends MyBBIntegratorTestCase {
 
 	const CATEGORY_SYMBOL = 'c';
 
+	const FORUM_TO_REMOVE_ID = 5;
+	const FORUM_DOES_NOT_EXIST_ID = 999;
+
 	const NEW_CATEGORY_NAME = "TestCreateCategory-Name";
 	const NEW_CATEGORY_DESCRIPTION = "TestCreateCategory-Description";
-	const NEW_CATEGORY_ID = 5;
+	const NEW_CATEGORY_ID = 6;
 	
 	/**
 	 * Test for checking forum password
@@ -84,6 +87,42 @@ class ForumTest extends MyBBIntegratorTestCase {
 		$this->assertEquals(
 			0,
 			$return_data['pid']
+		);
+	}
+
+	public function testRemoveForumWhichDoesNotExist() {
+		$forum = $this->mybb_integrator->getForum(self::FORUM_DOES_NOT_EXIST_ID);
+		$this->assertFalse(
+			$forum,
+			"forum should not exist and should therefore be false"
+		);
+
+		$status = $this->mybb_integrator->removeForumOrCategory(self::FORUM_DOES_NOT_EXIST_ID);
+
+		$this->assertFalse(
+			$status,
+			"state of removing a forum which does not exist should be false"
+		);
+	}
+
+	public function testRemoveForumWhichExists() {
+		$forum = $this->mybb_integrator->getForum(self::FORUM_TO_REMOVE_ID);
+		$this->assertTrue(
+			is_array($forum),
+			"forum should exist before removing it - therefore should be array"
+		);
+
+		$status = $this->mybb_integrator->removeForumOrCategory(self::FORUM_TO_REMOVE_ID);
+
+		$this->assertTrue(
+			$status,
+			"state of removing forum should be true"
+		);
+
+		$forum = $this->mybb_integrator->getForum(self::FORUM_TO_REMOVE_ID);
+		$this->assertFalse(
+			$forum,
+			"forum should not exist after removing it"
 		);
 	}
 }
