@@ -2547,8 +2547,6 @@ class MyBBIntegrator
 			}
 		}
 		
-		echo '<pre>'; print_r($info); echo '</pre>';
-		
 		// Run whatever hook specified at the beginning of the registration		
 		$this->plugins->run_hooks('member_do_register_start');
 		

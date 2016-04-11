@@ -32,8 +32,8 @@ class MiscTest extends MyBBIntegratorTestCase {
 		$parsed_message = $this->mybb_integrator->parseString($message);
 		
 		$this->assertEquals(
-			$parsed_message,
-			$expected_message
+			$expected_message,
+			$parsed_message
 		);
 	}
 
@@ -43,8 +43,8 @@ class MiscTest extends MyBBIntegratorTestCase {
 		$parsed_message = $this->mybb_integrator->parseString($message, array('allow_html' => 1));
 		
 		$this->assertEquals(
-			$parsed_message,
-			$expected_message
+			$expected_message,
+			$parsed_message
 		);
 	}
 }

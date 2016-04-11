@@ -176,4 +176,52 @@ class UserTest extends MyBBIntegratorTestCase {
 			"normal user should not be super admin"
 		);
 	}
+
+	public function testRegisterCorrect() {
+		$user_data = array(
+		    'username' => 'Testuser',
+		    'password' => 'difficultpassword',
+		    'password2' => 'difficultpassword',
+		    'email' => 'some_address@example.com',
+		    'email2' => 'some_address@example.com',
+		    'hideemail' => 1,
+		    'invisible' => 0,
+		    'receivepms' => 1
+		);
+
+		$register_status = $this->mybb_integrator->register($user_data);
+
+		$this->assertFalse(
+			is_array($register_status),
+			"registration should work, therefore no array containing error messages should be returned"
+		);
+
+		$this->assertEquals(
+			"Thank you for registering on MyBB Forum Name, Testuser.<br />You will now be taken back to the main page.",
+			$register_status,
+			"default message for correct registration should be in return status"
+		);
+	}
+
+	public function testRegisterFails() {
+		$user_data = array(
+		    'username' => 'Testuser',
+		    'password' => 'password',
+		    'password2' => 'password_does_not_match',
+		    'email' => 'some_address@example.com',
+		    'email2' => 'some_address@example.com',
+		    'hideemail' => 1,
+		    'invisible' => 0,
+		    'receivepms' => 1
+		);
+
+		$register_status = $this->mybb_integrator->register($user_data);
+
+		$this->assertTrue(
+			is_array($register_status),
+			"when registration fails, an array containing error messages should be returned"
+		);
+
+		__($register_status,0,0);
+	}
 }
