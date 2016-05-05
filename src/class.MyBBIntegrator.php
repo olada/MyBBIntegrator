@@ -1620,7 +1620,7 @@ class MyBBIntegrator
 	 *
 	 * @param integer $user_id ID of user
 	 * @param array $params Array with options for SQL Query (orderby, sort)
-	 * @param boolean $translate_folders If the folders should be turned into readable format à la "inbox"
+	 * @param boolean $translate_folders If the folders should be turned into readable format Ã  la "inbox"
 	 * @return array
 	*/
 	public function getPrivateMessagesOfUser($user_id, $params = array('orderby' => 'pm.dateline', 'sort' => 'DESC'), $translate_folders = true)
