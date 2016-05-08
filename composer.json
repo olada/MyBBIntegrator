@@ -1,5 +1,5 @@
 {
-    "name": "aa6my/mybbintegrator",
+    "name": "olada/mybbintegrator",
     "description": "PHP Class which offers MyBB functionality for own use (integration into website).",
     "minimum-stability": "dev",
     "require": {}
