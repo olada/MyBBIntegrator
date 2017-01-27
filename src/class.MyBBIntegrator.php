@@ -2107,6 +2107,7 @@ class MyBBIntegrator
 		$errors = array();
 		$logins = login_attempt_check();
 
+		require_once MYBB_ROOT.'inc/functions_user.php';
 		require_once MYBB_ROOT."inc/datahandlers/login.php";
 		$loginhandler = new LoginDataHandler("get");
 
